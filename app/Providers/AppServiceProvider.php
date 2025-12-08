@@ -29,10 +29,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             \Domain\Leave\Repositories\LeaveRepositoryInterface::class,
-            function () {
-                // Will be implemented in Phase 8
-                throw new \RuntimeException('LeaveRepository not yet implemented');
-            }
+            \Infrastructure\Persistence\Eloquent\Repositories\LeaveRepository::class
         );
     }
 
@@ -41,6 +38,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Schedule monthly leave accrual
+        $this->app->booted(function () {
+            $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+            
+            // Run monthly leave accrual on 1st day of month at midnight
+            $schedule->job(new \App\Jobs\AccrueLeaveBalances())
+                ->monthlyOn(1, '00:00')
+                ->name('accrue-leave-balances')
+                ->withoutOverlapping();
+        });
     }
 }

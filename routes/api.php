@@ -75,7 +75,22 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
             ->name('api.equipment.history');
     });
     
-    // Leave endpoints (to be implemented in Phase 8)
-    // Route::apiResource('leaves', LeaveController::class);
+    // Leave endpoints
+    Route::apiResource('leaves', \App\Http\Controllers\Api\LeaveController::class)
+        ->parameters(['leaves' => 'leaveId']);
+    
+    Route::prefix('leaves')->group(function () {
+        Route::post('/{leaveId}/approve', [\App\Http\Controllers\Api\LeaveController::class, 'approve'])
+            ->name('api.leaves.approve');
+        Route::post('/{leaveId}/reject', [\App\Http\Controllers\Api\LeaveController::class, 'reject'])
+            ->name('api.leaves.reject');
+        Route::post('/{leaveId}/cancel', [\App\Http\Controllers\Api\LeaveController::class, 'cancel'])
+            ->name('api.leaves.cancel');
+        Route::get('/calendar', [\App\Http\Controllers\Api\LeaveController::class, 'calendar'])
+            ->name('api.leaves.calendar');
+    });
+    
+    Route::get('/employees/{employeeId}/leave-balance', [\App\Http\Controllers\Api\LeaveController::class, 'balance'])
+        ->name('api.employees.leave-balance');
 });
 
