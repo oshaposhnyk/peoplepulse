@@ -1,0 +1,28 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    
+    paths:
+        - app
+        - src
+        - database
+        - config
+    
+    excludePaths:
+        - vendor
+        - storage
+        - bootstrap/cache
+        - node_modules
+        - tests
+    
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    
+    ignoreErrors:
+        # Ignore mixed types from Laravel facades
+        - '#Cannot call method .* on mixed#'
+        # Ignore dynamic property access (common in Laravel)
+        - '#Access to an undefined property#'
+

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Middleware\HandleAppearance;
-use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,10 +17,49 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             HandleAppearance::class,
-            HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Map domain exceptions to HTTP status codes
+        $exceptions->renderable(function (\Domain\Shared\Exceptions\DomainException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => [
+                    'code' => 'BUSINESS_RULE_VIOLATION',
+                    'message' => $e->getMessage(),
+                ],
+            ], 422);
+        });
+
+        $exceptions->renderable(function (\Application\Exceptions\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => [
+                    'code' => 'VALIDATION_ERROR',
+                    'message' => $e->getMessage(),
+                    'errors' => $e->getErrors(),
+                ],
+            ], 422);
+        });
+
+        $exceptions->renderable(function (\Application\Exceptions\NotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => [
+                    'code' => 'NOT_FOUND',
+                    'message' => $e->getMessage(),
+                ],
+            ], 404);
+        });
+
+        $exceptions->renderable(function (\Application\Exceptions\UnauthorizedException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => [
+                    'code' => 'UNAUTHORIZED',
+                    'message' => $e->getMessage(),
+                ],
+            ], 403);
+        });
     })->create();

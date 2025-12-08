@@ -1,0 +1,267 @@
+services:
+  # Application Service
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: app
+    container_name: peoplepulse-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - PHP_IDE_CONFIG=serverName=peoplepulse
+
+  # Web Server Service
+  webserver:
+    image: nginx:alpine
+    container_name: peoplepulse-webserver
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+      - "443:443"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - app
+
+  # PostgreSQL Database Service
+  postgres:
+    image: postgres:15-alpine
+    container_name: peoplepulse-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-peoplepulse}
+      POSTGRES_USER: ${DB_USERNAME:-peoplepulse}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+    networks:
+      - peoplepulse-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-peoplepulse}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Service (Cache + Queue)
+  redis:
+    image: redis:7-alpine
+    container_name: peoplepulse-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - peoplepulse-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Queue Worker Service (High Priority) - Worker 1
+  queue-high-1:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: app
+    container_name: peoplepulse-queue-high-1
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan queue:work redis --queue=high-priority --sleep=1 --tries=3 --max-time=3600
+    volumes:
+      - .:/var/www/html
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - app
+      - redis
+      - postgres
+
+  # Queue Worker Service (High Priority) - Worker 2
+  queue-high-2:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: app
+    container_name: peoplepulse-queue-high-2
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan queue:work redis --queue=high-priority --sleep=1 --tries=3 --max-time=3600
+    volumes:
+      - .:/var/www/html
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - app
+      - redis
+      - postgres
+
+  # Queue Worker Service (Default) - Single worker handling default queue
+  queue-default:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: app
+    container_name: peoplepulse-queue-default
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan queue:work redis --queue=default --sleep=3 --tries=3 --max-time=3600
+    volumes:
+      - .:/var/www/html
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - app
+      - redis
+      - postgres
+
+  # Queue Worker Service (Notifications)
+  queue-notifications:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: app
+    container_name: peoplepulse-queue-notifications
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan queue:work redis --queue=notifications --sleep=3 --tries=5 --max-time=3600
+    volumes:
+      - .:/var/www/html
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - app
+      - redis
+      - postgres
+
+  # Queue Worker Service (Reports)
+  queue-reports:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: app
+    container_name: peoplepulse-queue-reports
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan queue:work redis --queue=reports --sleep=5 --tries=2 --timeout=300 --max-time=3600
+    volumes:
+      - .:/var/www/html
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - app
+      - redis
+      - postgres
+
+  # Laravel Horizon (Queue Monitoring)
+  horizon:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: app
+    container_name: peoplepulse-horizon
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan horizon
+    volumes:
+      - .:/var/www/html
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - app
+      - redis
+      - postgres
+
+  # Scheduler (Laravel Cron)
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: app
+    container_name: peoplepulse-scheduler
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan schedule:work
+    volumes:
+      - .:/var/www/html
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - app
+      - redis
+      - postgres
+
+  # Mailhog (Development Email Testing)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: peoplepulse-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - peoplepulse-network
+
+  # Node.js for frontend development
+  node:
+    image: node:20-alpine
+    container_name: peoplepulse-node
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    networks:
+      - peoplepulse-network
+    command: sh -c "sleep infinity"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - app
+
+  # PhpMyAdmin (Optional - for database management)
+  phpmyadmin:
+    image: dpage/pgadmin4:latest
+    container_name: peoplepulse-pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@peoplepulse.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-secret}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - peoplepulse-network
+    depends_on:
+      - postgres
+
+networks:
+  peoplepulse-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+

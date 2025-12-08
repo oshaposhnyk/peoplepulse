@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'database'),
+    'default' => env('QUEUE_CONNECTION', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
@@ -73,6 +73,46 @@ return [
             'after_commit' => false,
         ],
 
+        // High priority queue for critical jobs
+        'redis-high' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'high-priority',
+            'retry_after' => 60,
+            'block_for' => 5,
+            'after_commit' => false,
+        ],
+
+        // Notifications queue
+        'redis-notifications' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'notifications',
+            'retry_after' => 90,
+            'block_for' => 5,
+            'after_commit' => false,
+        ],
+
+        // Reports queue for long-running jobs
+        'redis-reports' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'reports',
+            'retry_after' => 300,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
+        // Low priority background jobs
+        'redis-low' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'low-priority',
+            'retry_after' => 600,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
         'deferred' => [
             'driver' => 'deferred',
         ],
@@ -103,7 +143,7 @@ return [
     */
 
     'batching' => [
-        'database' => env('DB_CONNECTION', 'sqlite'),
+        'database' => env('DB_CONNECTION', 'pgsql'),
         'table' => 'job_batches',
     ],
 
@@ -122,7 +162,7 @@ return [
 
     'failed' => [
         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
-        'database' => env('DB_CONNECTION', 'sqlite'),
+        'database' => env('DB_CONNECTION', 'pgsql'),
         'table' => 'failed_jobs',
     ],
 
