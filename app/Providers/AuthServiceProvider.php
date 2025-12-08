@@ -17,8 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // Employee::class => EmployeePolicy::class,
-        // Will be added when Eloquent models are created
+        \Infrastructure\Persistence\Eloquent\Models\Employee::class => \App\Policies\EmployeePolicy::class,
     ];
 
     /**

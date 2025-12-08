@@ -11,7 +11,32 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Bind repositories
+        $this->app->bind(
+            \Domain\Employee\Repositories\EmployeeRepositoryInterface::class,
+            \Infrastructure\Persistence\Eloquent\Repositories\EmployeeRepository::class
+        );
+
+        $this->app->bind(
+            \Domain\Team\Repositories\TeamRepositoryInterface::class,
+            \Infrastructure\Persistence\Eloquent\Repositories\TeamRepository::class
+        );
+
+        $this->app->bind(
+            \Domain\Equipment\Repositories\EquipmentRepositoryInterface::class,
+            function () {
+                // Will be implemented in Phase 7
+                throw new \RuntimeException('EquipmentRepository not yet implemented');
+            }
+        );
+
+        $this->app->bind(
+            \Domain\Leave\Repositories\LeaveRepositoryInterface::class,
+            function () {
+                // Will be implemented in Phase 8
+                throw new \RuntimeException('LeaveRepository not yet implemented');
+            }
+        );
     }
 
     /**

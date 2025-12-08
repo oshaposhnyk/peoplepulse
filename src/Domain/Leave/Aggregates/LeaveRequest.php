@@ -22,17 +22,26 @@ use InvalidArgumentException;
  */
 final class LeaveRequest extends AggregateRoot
 {
-    private function __construct(
-        private LeaveId $id,
-        private string $employeeId,
-        private LeaveType $type,
-        private LeavePeriod $period,
-        private string $reason,
-        private LeaveStatus $status,
-        private ?string $approvedBy = null,
-        private ?DateTimeImmutable $approvedAt = null,
-        private ?string $rejectionReason = null
+    public function __construct(
+        LeaveId $id,
+        string $employeeId,
+        LeaveType $type,
+        LeavePeriod $period,
+        string $reason,
+        LeaveStatus $status,
+        ?string $approvedBy = null,
+        ?DateTimeImmutable $approvedAt = null,
+        ?string $rejectionReason = null
     ) {
+        $this->id = $id;
+        $this->employeeId = $employeeId;
+        $this->type = $type;
+        $this->period = $period;
+        $this->reason = $reason;
+        $this->status = $status;
+        $this->approvedBy = $approvedBy;
+        $this->approvedAt = $approvedAt;
+        $this->rejectionReason = $rejectionReason;
     }
 
     public static function request(

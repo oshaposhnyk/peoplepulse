@@ -28,18 +28,30 @@ final class Equipment extends AggregateRoot
     /** @var array<Assignment> */
     private array $assignmentHistory = [];
 
-    private function __construct(
-        private EquipmentId $id,
-        private AssetTag $assetTag,
-        private EquipmentType $type,
-        private string $brand,
-        private string $model,
-        private SerialNumber $serialNumber,
-        private EquipmentStatus $status,
-        private DateTimeImmutable $purchaseDate,
-        private Money $purchasePrice,
-        private ?Assignment $currentAssignment = null
+    public function __construct(
+        EquipmentId $id,
+        AssetTag $assetTag,
+        EquipmentType $type,
+        string $brand,
+        string $model,
+        SerialNumber $serialNumber,
+        EquipmentStatus $status,
+        DateTimeImmutable $purchaseDate,
+        Money $purchasePrice,
+        ?Assignment $currentAssignment = null,
+        array $assignmentHistory = []
     ) {
+        $this->id = $id;
+        $this->assetTag = $assetTag;
+        $this->type = $type;
+        $this->brand = $brand;
+        $this->model = $model;
+        $this->serialNumber = $serialNumber;
+        $this->status = $status;
+        $this->purchaseDate = $purchaseDate;
+        $this->purchasePrice = $purchasePrice;
+        $this->currentAssignment = $currentAssignment;
+        $this->assignmentHistory = $assignmentHistory;
     }
 
     public static function add(

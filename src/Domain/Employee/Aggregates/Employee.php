@@ -28,19 +28,30 @@ use InvalidArgumentException;
  */
 final class Employee extends AggregateRoot
 {
-    private function __construct(
-        private EmployeeId $id,
-        private PersonalInfo $personalInfo,
-        private Position $position,
-        private Salary $salary,
-        private WorkLocation $location,
-        private DateTimeImmutable $hireDate,
-        private EmploymentStatus $status,
-        private ?RemoteWorkPolicy $remoteWorkPolicy = null,
-        private ?DateTimeImmutable $terminationDate = null,
-        private array $positionHistory = [],
-        private array $locationHistory = []
+    public function __construct(
+        EmployeeId $id,
+        PersonalInfo $personalInfo,
+        Position $position,
+        Salary $salary,
+        WorkLocation $location,
+        DateTimeImmutable $hireDate,
+        EmploymentStatus $status,
+        ?RemoteWorkPolicy $remoteWorkPolicy = null,
+        ?DateTimeImmutable $terminationDate = null,
+        array $positionHistory = [],
+        array $locationHistory = []
     ) {
+        $this->id = $id;
+        $this->personalInfo = $personalInfo;
+        $this->position = $position;
+        $this->salary = $salary;
+        $this->location = $location;
+        $this->hireDate = $hireDate;
+        $this->status = $status;
+        $this->remoteWorkPolicy = $remoteWorkPolicy;
+        $this->terminationDate = $terminationDate;
+        $this->positionHistory = $positionHistory;
+        $this->locationHistory = $locationHistory;
     }
 
     /**

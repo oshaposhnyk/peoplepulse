@@ -22,13 +22,19 @@ abstract class BaseRepository implements Repository
 
     /**
      * Convert Eloquent model to domain aggregate
+     *
+     * @param Model $model
+     * @return AggregateRoot
      */
-    abstract protected function toDomain(Model $model): AggregateRoot;
+    abstract protected function toDomain($model): AggregateRoot;
 
     /**
      * Convert domain aggregate to Eloquent model
+     *
+     * @param AggregateRoot $aggregate
+     * @return Model
      */
-    abstract protected function toModel(AggregateRoot $aggregate): Model;
+    abstract protected function toModel($aggregate): Model;
 
     /**
      * Generate next identity

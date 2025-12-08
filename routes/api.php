@@ -27,11 +27,39 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('/auth/refresh', [AuthController::class, 'refresh'])->name('api.refresh');
     Route::get('/auth/me', [AuthController::class, 'me'])->name('api.me');
     
-    // Employee endpoints (to be implemented in Phase 5)
-    // Route::apiResource('employees', EmployeeController::class);
+    // Employee endpoints
+    Route::apiResource('employees', \App\Http\Controllers\Api\EmployeeController::class)
+        ->parameters(['employees' => 'employeeId']);
     
-    // Team endpoints (to be implemented in Phase 6)
-    // Route::apiResource('teams', TeamController::class);
+    Route::prefix('employees/{employeeId}')->group(function () {
+        Route::post('/position', [\App\Http\Controllers\Api\EmployeeController::class, 'changePosition'])
+            ->name('api.employees.position');
+        Route::post('/location', [\App\Http\Controllers\Api\EmployeeController::class, 'changeLocation'])
+            ->name('api.employees.location');
+        Route::post('/remote-work', [\App\Http\Controllers\Api\EmployeeController::class, 'configureRemoteWork'])
+            ->name('api.employees.remote-work');
+        Route::post('/terminate', [\App\Http\Controllers\Api\EmployeeController::class, 'terminate'])
+            ->name('api.employees.terminate');
+        Route::get('/history', [\App\Http\Controllers\Api\EmployeeController::class, 'history'])
+            ->name('api.employees.history');
+    });
+    
+    // Team endpoints
+    Route::apiResource('teams', \App\Http\Controllers\Api\TeamController::class)
+        ->parameters(['teams' => 'teamId']);
+    
+    Route::prefix('teams/{teamId}')->group(function () {
+        Route::post('/members', [\App\Http\Controllers\Api\TeamController::class, 'assignMember'])
+            ->name('api.teams.members.assign');
+        Route::delete('/members/{employeeId}', [\App\Http\Controllers\Api\TeamController::class, 'removeMember'])
+            ->name('api.teams.members.remove');
+        Route::post('/transfer', [\App\Http\Controllers\Api\TeamController::class, 'transfer'])
+            ->name('api.teams.transfer');
+        Route::post('/lead', [\App\Http\Controllers\Api\TeamController::class, 'changeTeamLead'])
+            ->name('api.teams.lead');
+        Route::get('/members', [\App\Http\Controllers\Api\TeamController::class, 'members'])
+            ->name('api.teams.members');
+    });
     
     // Equipment endpoints (to be implemented in Phase 7)
     // Route::apiResource('equipment', EquipmentController::class);

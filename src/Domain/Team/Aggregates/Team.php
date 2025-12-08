@@ -25,15 +25,24 @@ final class Team extends AggregateRoot
     /** @var array<TeamMember> */
     private array $members = [];
 
-    private function __construct(
-        private TeamId $id,
-        private TeamName $name,
-        private string $description,
-        private string $type,
-        private ?TeamId $parentTeamId,
-        private ?int $maxSize,
-        private bool $isDisbanded = false
+    public function __construct(
+        TeamId $id,
+        TeamName $name,
+        string $description,
+        string $type,
+        ?TeamId $parentTeamId,
+        ?int $maxSize,
+        bool $isDisbanded = false,
+        array $members = []
     ) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->description = $description;
+        $this->type = $type;
+        $this->parentTeamId = $parentTeamId;
+        $this->maxSize = $maxSize;
+        $this->isDisbanded = $isDisbanded;
+        $this->members = $members;
     }
 
     public static function create(
