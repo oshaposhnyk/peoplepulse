@@ -1,0 +1,1627 @@
+{
+  "phases": [
+    {
+      "id": "phase_1",
+      "title": "Requirements and System Design",
+      "description": "Establish comprehensive system requirements, define domain boundaries, design architecture patterns, and create technical specifications for the entire application.",
+      "tasks": [
+        {
+          "id": "task_1_1",
+          "title": "Define Functional Requirements",
+          "description": "Document all functional requirements including employee lifecycle management, team operations, equipment tracking, leave management, and role-based access specifications. Create user stories and acceptance criteria for each feature.",
+          "status": "completed",
+          "dependencies": []
+        },
+        {
+          "id": "task_1_2",
+          "title": "Define Non-Functional Requirements",
+          "description": "Specify performance requirements, security standards, scalability targets, availability SLAs, and data retention policies. Document compliance requirements and audit trail specifications.",
+          "status": "completed",
+          "dependencies": ["task_1_1"]
+        },
+        {
+          "id": "task_1_3",
+          "title": "Identify Domain Boundaries",
+          "description": "Perform domain analysis to identify bounded contexts: Employee Management, Team Management, Equipment Management, Leave Management, and Authentication. Define relationships and integration points between domains.",
+          "status": "completed",
+          "dependencies": ["task_1_1"]
+        },
+        {
+          "id": "task_1_4",
+          "title": "Design Domain Models",
+          "description": "Create comprehensive domain models for each bounded context including entities, value objects, and aggregates. Define invariants, business rules, and domain events for each aggregate.",
+          "status": "completed",
+          "dependencies": ["task_1_3"]
+        },
+        {
+          "id": "task_1_5",
+          "title": "Define Event Catalog",
+          "description": "Document all domain events that will be raised across the system such as EmployeeHired, EmployeeTerminated, TeamAssigned, EquipmentIssued, LeaveRequested. Specify event payload structures and subscriber mappings.",
+          "status": "not_started",
+          "dependencies": ["task_1_4"]
+        },
+        {
+          "id": "task_1_6",
+          "title": "Design Database Schema",
+          "description": "Create detailed database schema with all tables, relationships, indexes, and constraints. Design for both transactional consistency within aggregates and eventual consistency across domains.",
+          "status": "not_started",
+          "dependencies": ["task_1_4"]
+        },
+        {
+          "id": "task_1_7",
+          "title": "Design REST API Structure",
+          "description": "Define complete REST API endpoints with request/response schemas, HTTP methods, status codes, pagination strategies, and error handling patterns. Document API versioning strategy.",
+          "status": "not_started",
+          "dependencies": ["task_1_4"]
+        },
+        {
+          "id": "task_1_8",
+          "title": "Design Authentication & Authorization Model",
+          "description": "Define role-based access control structure with Admin and Employee roles. Specify permissions matrix, authentication flow using Laravel Sanctum, and token management strategy.",
+          "status": "not_started",
+          "dependencies": ["task_1_2"]
+        },
+        {
+          "id": "task_1_9",
+          "title": "Design Queue Architecture",
+          "description": "Define asynchronous job types for heavy operations like notifications, reports, and bulk operations. Specify queue priorities, retry strategies, and failure handling mechanisms.",
+          "status": "not_started",
+          "dependencies": ["task_1_2"]
+        },
+        {
+          "id": "task_1_10",
+          "title": "Create System Architecture Diagram",
+          "description": "Produce comprehensive architecture diagrams showing frontend-backend separation, domain boundaries, event flows, database structure, and external integration points.",
+          "status": "not_started",
+          "dependencies": ["task_1_3", "task_1_7", "task_1_9"]
+        },
+        {
+          "id": "task_1_11",
+          "title": "Define Testing Strategy",
+          "description": "Establish comprehensive testing approach including unit tests for domain logic, integration tests for repositories, feature tests for API endpoints, and E2E tests. Define coverage targets and CI/CD pipeline requirements.",
+          "status": "not_started",
+          "dependencies": ["task_1_2"]
+        },
+        {
+          "id": "task_1_12",
+          "title": "Create Development Roadmap",
+          "description": "Establish sprint planning, milestone definitions, task prioritization, and resource allocation strategy. Define release schedule and deployment strategy.",
+          "status": "not_started",
+          "dependencies": ["task_1_10", "task_1_11"]
+        }
+      ]
+    },
+    {
+      "id": "phase_2",
+      "title": "Backend Core Setup",
+      "description": "Initialize Laravel 12 project with DDD architecture, configure development environment, establish coding standards, and set up testing infrastructure.",
+      "tasks": [
+        {
+          "id": "task_2_1",
+          "title": "Initialize Laravel 12 Project",
+          "description": "Create fresh Laravel 12 installation with PHP 8.2 requirements. Configure composer dependencies and verify installation integrity.",
+          "status": "not_started",
+          "dependencies": ["task_1_12"]
+        },
+        {
+          "id": "task_2_2",
+          "title": "Configure Development Environment",
+          "description": "Set up .env configuration for local development including database connections, queue drivers, cache drivers, and mail settings. Configure Docker containers if needed.",
+          "status": "not_started",
+          "dependencies": ["task_2_1"]
+        },
+        {
+          "id": "task_2_3",
+          "title": "Establish DDD Directory Structure",
+          "description": "Create DDD-compliant folder structure with src/Domains, src/Application, src/Infrastructure directories. Set up namespace autoloading in composer.json for domain-driven organization.",
+          "status": "not_started",
+          "dependencies": ["task_2_1"]
+        },
+        {
+          "id": "task_2_4",
+          "title": "Install Core Dependencies",
+          "description": "Install Laravel Filament, Laravel Sanctum, and other essential packages. Configure package versions and ensure compatibility with PHP 8.2 and Laravel 12.",
+          "status": "not_started",
+          "dependencies": ["task_2_1"]
+        },
+        {
+          "id": "task_2_5",
+          "title": "Configure Code Quality Tools",
+          "description": "Install and configure Laravel Pint for code formatting, PHPStan for static analysis, and PHP CS Fixer. Set up pre-commit hooks to enforce code standards.",
+          "status": "not_started",
+          "dependencies": ["task_2_1"]
+        },
+        {
+          "id": "task_2_6",
+          "title": "Set Up Pest Testing Framework",
+          "description": "Install Pest with Laravel plugin, configure pest.php, and create test directory structure aligned with DDD architecture. Set up parallel testing configuration.",
+          "status": "not_started",
+          "dependencies": ["task_2_1"]
+        },
+        {
+          "id": "task_2_7",
+          "title": "Configure Database Connections",
+          "description": "Set up primary database connection, configure migration settings, and establish database naming conventions. Configure separate test database for isolation.",
+          "status": "not_started",
+          "dependencies": ["task_2_2"]
+        },
+        {
+          "id": "task_2_8",
+          "title": "Configure Queue Infrastructure",
+          "description": "Set up queue configuration with database or Redis driver. Configure queue workers, job batching, and failure handling. Create supervisor configuration for production.",
+          "status": "not_started",
+          "dependencies": ["task_2_2"]
+        },
+        {
+          "id": "task_2_9",
+          "title": "Configure Event System",
+          "description": "Set up Laravel event discovery, configure event-listener mappings, and establish event naming conventions. Configure queue settings for asynchronous event handling.",
+          "status": "not_started",
+          "dependencies": ["task_2_8"]
+        },
+        {
+          "id": "task_2_10",
+          "title": "Create Base Repository Interface",
+          "description": "Define generic repository interface with CRUD operations and query methods. Establish repository pattern contracts that domain repositories will implement.",
+          "status": "not_started",
+          "dependencies": ["task_2_3"]
+        },
+        {
+          "id": "task_2_11",
+          "title": "Create Base Service Classes",
+          "description": "Implement abstract base classes for application services including common patterns for command handling, validation, and transaction management.",
+          "status": "not_started",
+          "dependencies": ["task_2_3"]
+        },
+        {
+          "id": "task_2_12",
+          "title": "Set Up Exception Handling",
+          "description": "Create custom exception hierarchy for domain exceptions, application exceptions, and infrastructure exceptions. Configure global exception handler with proper HTTP status mapping.",
+          "status": "not_started",
+          "dependencies": ["task_2_3"]
+        },
+        {
+          "id": "task_2_13",
+          "title": "Configure Logging and Monitoring",
+          "description": "Set up comprehensive logging strategy with different channels for application logs, audit logs, and security logs. Configure log rotation and retention policies.",
+          "status": "not_started",
+          "dependencies": ["task_2_2"]
+        },
+        {
+          "id": "task_2_14",
+          "title": "Create Base Test Cases",
+          "description": "Develop base test case classes for unit tests, integration tests, and feature tests. Include helper methods for common testing scenarios and database seeding.",
+          "status": "not_started",
+          "dependencies": ["task_2_6"]
+        },
+        {
+          "id": "task_2_15",
+          "title": "Set Up CI/CD Pipeline Configuration",
+          "description": "Create GitHub Actions or GitLab CI configuration for automated testing, code quality checks, and deployment processes. Define pipeline stages and environment-specific configurations.",
+          "status": "not_started",
+          "dependencies": ["task_2_5", "task_2_6"]
+        }
+      ]
+    },
+    {
+      "id": "phase_3",
+      "title": "DDD Domain Construction",
+      "description": "Build the core domain layer with entities, value objects, aggregates, domain events, and business logic for all bounded contexts.",
+      "tasks": [
+        {
+          "id": "task_3_1",
+          "title": "Create Shared Kernel",
+          "description": "Implement shared value objects used across domains such as Email, PhoneNumber, Address, and Money. Create shared domain events and interfaces.",
+          "status": "not_started",
+          "dependencies": ["task_2_3"]
+        },
+        {
+          "id": "task_3_2",
+          "title": "Build Employee Domain - Entities",
+          "description": "Implement Employee aggregate root with entity methods for hiring, termination, position changes, and location changes. Include all business rules and invariants.",
+          "status": "not_started",
+          "dependencies": ["task_3_1"]
+        },
+        {
+          "id": "task_3_3",
+          "title": "Build Employee Domain - Value Objects",
+          "description": "Create value objects for EmployeeId, Position, Salary, EmploymentStatus, WorkLocation, and RemoteWorkPolicy. Implement validation and immutability.",
+          "status": "not_started",
+          "dependencies": ["task_3_2"]
+        },
+        {
+          "id": "task_3_4",
+          "title": "Build Employee Domain - Events",
+          "description": "Implement domain events: EmployeeHired, EmployeeTerminated, PositionChanged, LocationChanged, RemoteWorkEnabled. Include complete event payload structures.",
+          "status": "not_started",
+          "dependencies": ["task_3_2"]
+        },
+        {
+          "id": "task_3_5",
+          "title": "Build Employee Domain - Repository",
+          "description": "Define EmployeeRepository interface with methods for finding, storing, and querying employees. Include specifications for complex queries.",
+          "status": "not_started",
+          "dependencies": ["task_3_2", "task_2_10"]
+        },
+        {
+          "id": "task_3_6",
+          "title": "Build Team Domain - Entities",
+          "description": "Implement Team aggregate root with methods for creating teams, assigning members, removing members, and changing team leads. Enforce team size and composition rules.",
+          "status": "not_started",
+          "dependencies": ["task_3_1"]
+        },
+        {
+          "id": "task_3_7",
+          "title": "Build Team Domain - Value Objects",
+          "description": "Create value objects for TeamId, TeamName, TeamType, and MemberRole. Implement business rules for valid team configurations.",
+          "status": "not_started",
+          "dependencies": ["task_3_6"]
+        },
+        {
+          "id": "task_3_8",
+          "title": "Build Team Domain - Events",
+          "description": "Implement domain events: TeamCreated, EmployeeAssignedToTeam, EmployeeRemovedFromTeam, TeamLeadChanged, TeamDisbanded.",
+          "status": "not_started",
+          "dependencies": ["task_3_6"]
+        },
+        {
+          "id": "task_3_9",
+          "title": "Build Team Domain - Repository",
+          "description": "Define TeamRepository interface with methods for team CRUD operations, member queries, and team hierarchy navigation.",
+          "status": "not_started",
+          "dependencies": ["task_3_6", "task_2_10"]
+        },
+        {
+          "id": "task_3_10",
+          "title": "Build Equipment Domain - Entities",
+          "description": "Implement Equipment aggregate root with methods for issuing, returning, transferring, and tracking hardware. Include equipment lifecycle management.",
+          "status": "not_started",
+          "dependencies": ["task_3_1"]
+        },
+        {
+          "id": "task_3_11",
+          "title": "Build Equipment Domain - Value Objects",
+          "description": "Create value objects for EquipmentId, EquipmentType, SerialNumber, EquipmentStatus, and MaintenanceSchedule. Implement validation rules.",
+          "status": "not_started",
+          "dependencies": ["task_3_10"]
+        },
+        {
+          "id": "task_3_12",
+          "title": "Build Equipment Domain - Events",
+          "description": "Implement domain events: EquipmentIssued, EquipmentReturned, EquipmentTransferred, MaintenanceScheduled, EquipmentDecommissioned.",
+          "status": "not_started",
+          "dependencies": ["task_3_10"]
+        },
+        {
+          "id": "task_3_13",
+          "title": "Build Equipment Domain - Repository",
+          "description": "Define EquipmentRepository interface with methods for equipment tracking, assignment history, and availability queries.",
+          "status": "not_started",
+          "dependencies": ["task_3_10", "task_2_10"]
+        },
+        {
+          "id": "task_3_14",
+          "title": "Build Leave Domain - Entities",
+          "description": "Implement Leave aggregate root with methods for requesting leave, approving, rejecting, and canceling. Include leave balance tracking and business rules for leave policies.",
+          "status": "not_started",
+          "dependencies": ["task_3_1"]
+        },
+        {
+          "id": "task_3_15",
+          "title": "Build Leave Domain - Value Objects",
+          "description": "Create value objects for LeaveId, LeaveType (Vacation, Sick, Unpaid), LeavePeriod, LeaveBalance, and LeaveStatus. Implement accrual calculations.",
+          "status": "not_started",
+          "dependencies": ["task_3_14"]
+        },
+        {
+          "id": "task_3_16",
+          "title": "Build Leave Domain - Events",
+          "description": "Implement domain events: LeaveRequested, LeaveApproved, LeaveRejected, LeaveCancelled, LeaveBalanceUpdated.",
+          "status": "not_started",
+          "dependencies": ["task_3_14"]
+        },
+        {
+          "id": "task_3_17",
+          "title": "Build Leave Domain - Repository",
+          "description": "Define LeaveRepository interface with methods for leave request management, balance tracking, and calendar queries.",
+          "status": "not_started",
+          "dependencies": ["task_3_14", "task_2_10"]
+        },
+        {
+          "id": "task_3_18",
+          "title": "Implement Domain Event Handlers",
+          "description": "Create event listeners for cross-domain event handling. Implement eventual consistency patterns where events from one domain trigger updates in another.",
+          "status": "not_started",
+          "dependencies": ["task_3_4", "task_3_8", "task_3_12", "task_3_16"]
+        }
+      ]
+    },
+    {
+      "id": "phase_4",
+      "title": "Authentication & Authorization",
+      "description": "Implement secure authentication system with Laravel Sanctum, role-based access control, and permission management.",
+      "tasks": [
+        {
+          "id": "task_4_1",
+          "title": "Configure Laravel Sanctum",
+          "description": "Install and configure Laravel Sanctum for API token authentication. Set up token abilities, expiration policies, and secure token storage.",
+          "status": "not_started",
+          "dependencies": ["task_2_4"]
+        },
+        {
+          "id": "task_4_2",
+          "title": "Create User Model Extensions",
+          "description": "Extend Laravel User model with custom attributes for employee relationship, role assignments, and permission caching. Implement necessary relationships.",
+          "status": "not_started",
+          "dependencies": ["task_4_1"]
+        },
+        {
+          "id": "task_4_3",
+          "title": "Implement Role System",
+          "description": "Create Role entity with Admin and Employee roles. Implement role assignment, role checking methods, and database structure for role management.",
+          "status": "not_started",
+          "dependencies": ["task_4_2"]
+        },
+        {
+          "id": "task_4_4",
+          "title": "Implement Permission System",
+          "description": "Define granular permissions for all system operations. Create permission checking middleware, gates, and policies. Implement permission inheritance for roles.",
+          "status": "not_started",
+          "dependencies": ["task_4_3"]
+        },
+        {
+          "id": "task_4_5",
+          "title": "Create Authentication API Endpoints",
+          "description": "Implement REST endpoints for login, logout, token refresh, and password reset. Include rate limiting and brute force protection.",
+          "status": "not_started",
+          "dependencies": ["task_4_1"]
+        },
+        {
+          "id": "task_4_6",
+          "title": "Implement Registration Flow",
+          "description": "Create registration endpoint with email verification, initial role assignment, and welcome notifications. Implement registration business rules.",
+          "status": "not_started",
+          "dependencies": ["task_4_5"]
+        },
+        {
+          "id": "task_4_7",
+          "title": "Create Authorization Middleware",
+          "description": "Implement middleware for route protection, role checking, and permission verification. Create middleware for admin-only routes.",
+          "status": "not_started",
+          "dependencies": ["task_4_4"]
+        },
+        {
+          "id": "task_4_8",
+          "title": "Implement Password Policies",
+          "description": "Create password complexity requirements, password expiration policies, and password history tracking. Implement secure password hashing with bcrypt.",
+          "status": "not_started",
+          "dependencies": ["task_4_5"]
+        },
+        {
+          "id": "task_4_9",
+          "title": "Create Session Management",
+          "description": "Implement active session tracking, device management, and forced logout capabilities. Create endpoints for viewing and revoking active sessions.",
+          "status": "not_started",
+          "dependencies": ["task_4_5"]
+        },
+        {
+          "id": "task_4_10",
+          "title": "Implement Audit Logging for Auth",
+          "description": "Create comprehensive audit trail for authentication events including login attempts, password changes, role changes, and permission modifications.",
+          "status": "not_started",
+          "dependencies": ["task_4_5", "task_2_13"]
+        },
+        {
+          "id": "task_4_11",
+          "title": "Create Authorization Policies",
+          "description": "Implement Laravel policies for all domain resources. Define authorization logic for employee, team, equipment, and leave operations based on roles and ownership.",
+          "status": "not_started",
+          "dependencies": ["task_4_4"]
+        },
+        {
+          "id": "task_4_12",
+          "title": "Write Authentication Tests",
+          "description": "Create comprehensive test suite for authentication flows, token management, password reset, and session handling. Test security vulnerabilities and edge cases.",
+          "status": "not_started",
+          "dependencies": ["task_4_5", "task_4_6", "task_2_14"]
+        },
+        {
+          "id": "task_4_13",
+          "title": "Write Authorization Tests",
+          "description": "Create test suite for role-based access control, permission checking, and policy enforcement. Test privilege escalation scenarios.",
+          "status": "not_started",
+          "dependencies": ["task_4_11", "task_2_14"]
+        }
+      ]
+    },
+    {
+      "id": "phase_5",
+      "title": "Employee Management Module",
+      "description": "Implement complete employee management functionality including CRUD operations, lifecycle management, and associated API endpoints.",
+      "tasks": [
+        {
+          "id": "task_5_1",
+          "title": "Create Employee Database Migration",
+          "description": "Create migration for employees table with all required fields including personal information, employment details, position, location, and remote work settings. Include proper indexes and foreign keys.",
+          "status": "not_started",
+          "dependencies": ["task_3_2", "task_2_7"]
+        },
+        {
+          "id": "task_5_2",
+          "title": "Implement Employee Repository",
+          "description": "Create concrete implementation of EmployeeRepository using Eloquent. Implement all query methods, filtering, sorting, and pagination support.",
+          "status": "not_started",
+          "dependencies": ["task_3_5", "task_5_1"]
+        },
+        {
+          "id": "task_5_3",
+          "title": "Create Employee DTOs",
+          "description": "Implement Data Transfer Objects for CreateEmployeeRequest, UpdateEmployeeRequest, EmployeeResponse, and EmployeeListResponse. Include validation rules.",
+          "status": "not_started",
+          "dependencies": ["task_3_2"]
+        },
+        {
+          "id": "task_5_4",
+          "title": "Implement Employee Application Service",
+          "description": "Create EmployeeService with methods for hiring, updating, terminating employees. Implement business logic orchestration and transaction management.",
+          "status": "not_started",
+          "dependencies": ["task_5_2", "task_5_3", "task_2_11"]
+        },
+        {
+          "id": "task_5_5",
+          "title": "Create Employee API Controller",
+          "description": "Implement RESTful controller for employee endpoints: GET /api/employees, POST /api/employees, GET /api/employees/:id, PUT /api/employees/:id, DELETE /api/employees/:id. Include proper HTTP status codes.",
+          "status": "not_started",
+          "dependencies": ["task_5_4"]
+        },
+        {
+          "id": "task_5_6",
+          "title": "Implement Employee Position Change",
+          "description": "Create endpoint and service method for changing employee positions. Include position history tracking, effective dates, and salary adjustments.",
+          "status": "not_started",
+          "dependencies": ["task_5_4"]
+        },
+        {
+          "id": "task_5_7",
+          "title": "Implement Employee Location Management",
+          "description": "Create functionality for changing employee office locations. Include location history tracking and remote work configuration.",
+          "status": "not_started",
+          "dependencies": ["task_5_4"]
+        },
+        {
+          "id": "task_5_8",
+          "title": "Implement Remote Work Configuration",
+          "description": "Create endpoints for enabling/disabling remote work, setting remote work policies, and tracking remote work schedules.",
+          "status": "not_started",
+          "dependencies": ["task_5_7"]
+        },
+        {
+          "id": "task_5_9",
+          "title": "Implement Employee Termination",
+          "description": "Create termination workflow including termination endpoint, exit date handling, equipment return triggers, and access revocation. Implement soft delete with termination reason.",
+          "status": "not_started",
+          "dependencies": ["task_5_4"]
+        },
+        {
+          "id": "task_5_10",
+          "title": "Create Employee Search and Filtering",
+          "description": "Implement advanced search with filters for status, position, location, team, and hire date. Include full-text search capabilities.",
+          "status": "not_started",
+          "dependencies": ["task_5_2"]
+        },
+        {
+          "id": "task_5_11",
+          "title": "Implement Employee Event Listeners",
+          "description": "Create event listeners for EmployeeHired, EmployeeTerminated, PositionChanged events to trigger notifications, audit logs, and cross-domain updates.",
+          "status": "not_started",
+          "dependencies": ["task_3_4", "task_2_9"]
+        },
+        {
+          "id": "task_5_12",
+          "title": "Create Employee Validation Rules",
+          "description": "Implement comprehensive validation for employee data including email uniqueness, phone format, hire date logic, and required field validation.",
+          "status": "not_started",
+          "dependencies": ["task_5_3"]
+        },
+        {
+          "id": "task_5_13",
+          "title": "Implement Employee History Tracking",
+          "description": "Create audit trail for all employee changes including position history, location history, and salary changes. Implement endpoints for viewing history.",
+          "status": "not_started",
+          "dependencies": ["task_5_4", "task_2_13"]
+        },
+        {
+          "id": "task_5_14",
+          "title": "Create Employee Factory and Seeders",
+          "description": "Implement factory for generating test employee data and seeders for populating development database with realistic employee records.",
+          "status": "not_started",
+          "dependencies": ["task_5_1"]
+        },
+        {
+          "id": "task_5_15",
+          "title": "Write Employee Domain Tests",
+          "description": "Create unit tests for Employee entity business logic, value objects, and domain rules. Test all invariants and edge cases.",
+          "status": "not_started",
+          "dependencies": ["task_3_2", "task_2_14"]
+        },
+        {
+          "id": "task_5_16",
+          "title": "Write Employee API Tests",
+          "description": "Create feature tests for all employee API endpoints including authorization checks, validation errors, and success scenarios.",
+          "status": "not_started",
+          "dependencies": ["task_5_5", "task_2_14"]
+        },
+        {
+          "id": "task_5_17",
+          "title": "Write Employee Integration Tests",
+          "description": "Create integration tests for employee service layer, repository interactions, and event dispatching.",
+          "status": "not_started",
+          "dependencies": ["task_5_4", "task_5_11", "task_2_14"]
+        }
+      ]
+    },
+    {
+      "id": "phase_6",
+      "title": "Team Management Module",
+      "description": "Implement team management functionality including team CRUD, member assignment, team transfers, and hierarchical team structures.",
+      "tasks": [
+        {
+          "id": "task_6_1",
+          "title": "Create Team Database Migrations",
+          "description": "Create migrations for teams table and team_members pivot table. Include team hierarchy support, team metadata, and member role tracking.",
+          "status": "not_started",
+          "dependencies": ["task_3_6", "task_5_1"]
+        },
+        {
+          "id": "task_6_2",
+          "title": "Implement Team Repository",
+          "description": "Create concrete implementation of TeamRepository with methods for team CRUD, member management queries, and team hierarchy navigation.",
+          "status": "not_started",
+          "dependencies": ["task_3_9", "task_6_1"]
+        },
+        {
+          "id": "task_6_3",
+          "title": "Create Team DTOs",
+          "description": "Implement DTOs for CreateTeamRequest, UpdateTeamRequest, AssignMemberRequest, TeamResponse, and TeamMemberResponse with validation.",
+          "status": "not_started",
+          "dependencies": ["task_3_6"]
+        },
+        {
+          "id": "task_6_4",
+          "title": "Implement Team Application Service",
+          "description": "Create TeamService with methods for creating teams, assigning members, removing members, transferring between teams, and disbanding teams.",
+          "status": "not_started",
+          "dependencies": ["task_6_2", "task_6_3", "task_2_11"]
+        },
+        {
+          "id": "task_6_5",
+          "title": "Create Team API Controller",
+          "description": "Implement RESTful controller for team endpoints: GET /api/teams, POST /api/teams, GET /api/teams/:id, PUT /api/teams/:id, DELETE /api/teams/:id.",
+          "status": "not_started",
+          "dependencies": ["task_6_4"]
+        },
+        {
+          "id": "task_6_6",
+          "title": "Implement Team Member Assignment",
+          "description": "Create endpoint POST /api/teams/:id/members for assigning employees to teams. Include business rules for maximum team size and role constraints.",
+          "status": "not_started",
+          "dependencies": ["task_6_4"]
+        },
+        {
+          "id": "task_6_7",
+          "title": "Implement Team Member Removal",
+          "description": "Create endpoint DELETE /api/teams/:id/members/:employeeId for removing employees from teams. Handle team lead removal scenarios.",
+          "status": "not_started",
+          "dependencies": ["task_6_6"]
+        },
+        {
+          "id": "task_6_8",
+          "title": "Implement Employee Team Transfer",
+          "description": "Create endpoint POST /api/employees/:id/transfer for transferring employees between teams. Implement atomic transfer with history tracking.",
+          "status": "not_started",
+          "dependencies": ["task_6_6", "task_6_7"]
+        },
+        {
+          "id": "task_6_9",
+          "title": "Implement Team Hierarchy Management",
+          "description": "Create functionality for parent-child team relationships, team hierarchy queries, and organizational structure visualization endpoints.",
+          "status": "not_started",
+          "dependencies": ["task_6_2"]
+        },
+        {
+          "id": "task_6_10",
+          "title": "Implement Team Lead Management",
+          "description": "Create endpoints for assigning and changing team leads. Include validation that team lead must be team member and business rules for lead transitions.",
+          "status": "not_started",
+          "dependencies": ["task_6_6"]
+        },
+        {
+          "id": "task_6_11",
+          "title": "Create Team Statistics Endpoints",
+          "description": "Implement endpoints for team statistics including member count, equipment assigned to team, active leave requests, and team performance metrics.",
+          "status": "not_started",
+          "dependencies": ["task_6_4"]
+        },
+        {
+          "id": "task_6_12",
+          "title": "Implement Team Event Listeners",
+          "description": "Create event listeners for TeamCreated, EmployeeAssignedToTeam, EmployeeRemovedFromTeam events to trigger notifications and update related domains.",
+          "status": "not_started",
+          "dependencies": ["task_3_8", "task_2_9"]
+        },
+        {
+          "id": "task_6_13",
+          "title": "Create Team Search and Filtering",
+          "description": "Implement search and filtering for teams by name, type, lead, member count, and department. Include sorting and pagination.",
+          "status": "not_started",
+          "dependencies": ["task_6_2"]
+        },
+        {
+          "id": "task_6_14",
+          "title": "Create Team Factory and Seeders",
+          "description": "Implement factory for generating test team data with realistic team structures and member assignments for development environment.",
+          "status": "not_started",
+          "dependencies": ["task_6_1", "task_5_14"]
+        },
+        {
+          "id": "task_6_15",
+          "title": "Write Team Domain Tests",
+          "description": "Create unit tests for Team aggregate business logic, member assignment rules, and team hierarchy constraints.",
+          "status": "not_started",
+          "dependencies": ["task_3_6", "task_2_14"]
+        },
+        {
+          "id": "task_6_16",
+          "title": "Write Team API Tests",
+          "description": "Create feature tests for all team API endpoints including member assignment, transfers, and authorization checks.",
+          "status": "not_started",
+          "dependencies": ["task_6_5", "task_6_6", "task_6_8", "task_2_14"]
+        },
+        {
+          "id": "task_6_17",
+          "title": "Write Team Integration Tests",
+          "description": "Create integration tests for cross-domain interactions between team and employee domains, event handling, and transaction consistency.",
+          "status": "not_started",
+          "dependencies": ["task_6_4", "task_6_12", "task_2_14"]
+        }
+      ]
+    },
+    {
+      "id": "phase_7",
+      "title": "Equipment Management Module",
+      "description": "Implement hardware and equipment tracking system including issuing equipment, returns, transfers, maintenance, and inventory management.",
+      "tasks": [
+        {
+          "id": "task_7_1",
+          "title": "Create Equipment Database Migrations",
+          "description": "Create migrations for equipment table and equipment_assignments table. Include equipment specifications, purchase information, warranty tracking, and assignment history.",
+          "status": "not_started",
+          "dependencies": ["task_3_10", "task_5_1"]
+        },
+        {
+          "id": "task_7_2",
+          "title": "Implement Equipment Repository",
+          "description": "Create concrete implementation of EquipmentRepository with methods for inventory management, assignment tracking, and availability queries.",
+          "status": "not_started",
+          "dependencies": ["task_3_13", "task_7_1"]
+        },
+        {
+          "id": "task_7_3",
+          "title": "Create Equipment DTOs",
+          "description": "Implement DTOs for CreateEquipmentRequest, IssueEquipmentRequest, ReturnEquipmentRequest, EquipmentResponse with validation rules.",
+          "status": "not_started",
+          "dependencies": ["task_3_10"]
+        },
+        {
+          "id": "task_7_4",
+          "title": "Implement Equipment Application Service",
+          "description": "Create EquipmentService with methods for adding equipment, issuing to employees, returning, transferring, and decommissioning equipment.",
+          "status": "not_started",
+          "dependencies": ["task_7_2", "task_7_3", "task_2_11"]
+        },
+        {
+          "id": "task_7_5",
+          "title": "Create Equipment API Controller",
+          "description": "Implement RESTful controller for equipment endpoints: GET /api/equipment, POST /api/equipment, GET /api/equipment/:id, PUT /api/equipment/:id, DELETE /api/equipment/:id.",
+          "status": "not_started",
+          "dependencies": ["task_7_4"]
+        },
+        {
+          "id": "task_7_6",
+          "title": "Implement Equipment Issuance",
+          "description": "Create endpoint POST /api/equipment/:id/issue for issuing equipment to employees. Include validation for equipment availability and employee eligibility.",
+          "status": "not_started",
+          "dependencies": ["task_7_4"]
+        },
+        {
+          "id": "task_7_7",
+          "title": "Implement Equipment Return",
+          "description": "Create endpoint POST /api/equipment/:id/return for processing equipment returns. Include condition assessment and refurbishment workflow initiation.",
+          "status": "not_started",
+          "dependencies": ["task_7_6"]
+        },
+        {
+          "id": "task_7_8",
+          "title": "Implement Equipment Transfer",
+          "description": "Create endpoint POST /api/equipment/:id/transfer for transferring equipment between employees. Implement approval workflow for expensive equipment.",
+          "status": "not_started",
+          "dependencies": ["task_7_6"]
+        },
+        {
+          "id": "task_7_9",
+          "title": "Implement Equipment Maintenance Tracking",
+          "description": "Create functionality for scheduling maintenance, logging maintenance activities, and tracking equipment health. Include maintenance reminder notifications.",
+          "status": "not_started",
+          "dependencies": ["task_7_4"]
+        },
+        {
+          "id": "task_7_10",
+          "title": "Implement Equipment Inventory Management",
+          "description": "Create endpoints for inventory queries, availability checks, and stock level monitoring. Include low stock alerts and reorder recommendations.",
+          "status": "not_started",
+          "dependencies": ["task_7_2"]
+        },
+        {
+          "id": "task_7_11",
+          "title": "Create Equipment Assignment History",
+          "description": "Implement endpoints for viewing complete assignment history of equipment and all equipment assigned to specific employee with date ranges.",
+          "status": "not_started",
+          "dependencies": ["task_7_4"]
+        },
+        {
+          "id": "task_7_12",
+          "title": "Implement Equipment Event Listeners",
+          "description": "Create event listeners for EquipmentIssued, EquipmentReturned, MaintenanceScheduled events. Trigger notifications to employees and administrators.",
+          "status": "not_started",
+          "dependencies": ["task_3_12", "task_2_9"]
+        },
+        {
+          "id": "task_7_13",
+          "title": "Create Equipment Search and Filtering",
+          "description": "Implement advanced search for equipment by type, status, assigned employee, location, and purchase date. Include equipment specification search.",
+          "status": "not_started",
+          "dependencies": ["task_7_2"]
+        },
+        {
+          "id": "task_7_14",
+          "title": "Implement Automated Equipment Recovery",
+          "description": "Create queue job that automatically triggers equipment return process when employee is terminated. Send notifications to IT department.",
+          "status": "not_started",
+          "dependencies": ["task_7_7", "task_5_11"]
+        },
+        {
+          "id": "task_7_15",
+          "title": "Create Equipment Factory and Seeders",
+          "description": "Implement factory for generating test equipment data with various types, statuses, and assignment scenarios for development environment.",
+          "status": "not_started",
+          "dependencies": ["task_7_1"]
+        },
+        {
+          "id": "task_7_16",
+          "title": "Write Equipment Domain Tests",
+          "description": "Create unit tests for Equipment aggregate business logic, assignment rules, and maintenance scheduling constraints.",
+          "status": "not_started",
+          "dependencies": ["task_3_10", "task_2_14"]
+        },
+        {
+          "id": "task_7_17",
+          "title": "Write Equipment API Tests",
+          "description": "Create feature tests for all equipment API endpoints including issuance, returns, transfers, and authorization checks.",
+          "status": "not_started",
+          "dependencies": ["task_7_5", "task_7_6", "task_7_8", "task_2_14"]
+        },
+        {
+          "id": "task_7_18",
+          "title": "Write Equipment Integration Tests",
+          "description": "Create integration tests for equipment-employee interactions, automated recovery on termination, and event-driven workflows.",
+          "status": "not_started",
+          "dependencies": ["task_7_14", "task_7_12", "task_2_14"]
+        }
+      ]
+    },
+    {
+      "id": "phase_8",
+      "title": "Leave / Vacation / Sick Days Module",
+      "description": "Implement comprehensive leave management system with vacation tracking, sick leave, leave balances, approval workflows, and calendar integration.",
+      "tasks": [
+        {
+          "id": "task_8_1",
+          "title": "Create Leave Database Migrations",
+          "description": "Create migrations for leave_requests table and leave_balances table. Include leave types, approval workflow, balance accrual tracking, and carry-over policies.",
+          "status": "not_started",
+          "dependencies": ["task_3_14", "task_5_1"]
+        },
+        {
+          "id": "task_8_2",
+          "title": "Implement Leave Repository",
+          "description": "Create concrete implementation of LeaveRepository with methods for leave request management, balance queries, and calendar conflict checking.",
+          "status": "not_started",
+          "dependencies": ["task_3_17", "task_8_1"]
+        },
+        {
+          "id": "task_8_3",
+          "title": "Create Leave DTOs",
+          "description": "Implement DTOs for CreateLeaveRequest, ApproveLeaveRequest, RejectLeaveRequest, LeaveResponse, LeaveBalanceResponse with validation.",
+          "status": "not_started",
+          "dependencies": ["task_3_14"]
+        },
+        {
+          "id": "task_8_4",
+          "title": "Implement Leave Application Service",
+          "description": "Create LeaveService with methods for requesting leave, approving, rejecting, canceling, and managing leave balances. Include accrual calculation logic.",
+          "status": "not_started",
+          "dependencies": ["task_8_2", "task_8_3", "task_2_11"]
+        },
+        {
+          "id": "task_8_5",
+          "title": "Create Leave API Controller",
+          "description": "Implement RESTful controller for leave endpoints: GET /api/leaves, POST /api/leaves, GET /api/leaves/:id, PUT /api/leaves/:id, DELETE /api/leaves/:id.",
+          "status": "not_started",
+          "dependencies": ["task_8_4"]
+        },
+        {
+          "id": "task_8_6",
+          "title": "Implement Leave Request Submission",
+          "description": "Create endpoint POST /api/leaves for submitting leave requests. Include validation for sufficient balance, date conflicts, and minimum notice periods.",
+          "status": "not_started",
+          "dependencies": ["task_8_4"]
+        },
+        {
+          "id": "task_8_7",
+          "title": "Implement Leave Approval Workflow",
+          "description": "Create endpoints POST /api/leaves/:id/approve and POST /api/leaves/:id/reject for manager approval. Include approval chain for extended leaves.",
+          "status": "not_started",
+          "dependencies": ["task_8_6"]
+        },
+        {
+          "id": "task_8_8",
+          "title": "Implement Leave Balance Management",
+          "description": "Create endpoints GET /api/employees/:id/leave-balance for viewing balances. Implement balance accrual calculation and annual reset logic.",
+          "status": "not_started",
+          "dependencies": ["task_8_4"]
+        },
+        {
+          "id": "task_8_9",
+          "title": "Implement Leave Types Configuration",
+          "description": "Create system for configuring different leave types (Vacation, Sick, Unpaid) with different accrual rates, carry-over rules, and approval requirements.",
+          "status": "not_started",
+          "dependencies": ["task_8_4"]
+        },
+        {
+          "id": "task_8_10",
+          "title": "Implement Leave Calendar",
+          "description": "Create endpoint GET /api/leaves/calendar for viewing team leave calendar. Include conflict detection for team capacity and holiday overlap checking.",
+          "status": "not_started",
+          "dependencies": ["task_8_2"]
+        },
+        {
+          "id": "task_8_11",
+          "title": "Implement Leave Cancellation",
+          "description": "Create endpoint POST /api/leaves/:id/cancel for canceling approved leaves. Implement balance restoration and cancellation deadline policies.",
+          "status": "not_started",
+          "dependencies": ["task_8_7"]
+        },
+        {
+          "id": "task_8_12",
+          "title": "Create Leave Accrual Job",
+          "description": "Implement scheduled queue job for automatic leave balance accrual. Run monthly or per pay period to update employee leave balances.",
+          "status": "not_started",
+          "dependencies": ["task_8_8", "task_2_8"]
+        },
+        {
+          "id": "task_8_13",
+          "title": "Implement Leave Event Listeners",
+          "description": "Create event listeners for LeaveRequested, LeaveApproved, LeaveRejected events. Trigger email notifications to employees and managers.",
+          "status": "not_started",
+          "dependencies": ["task_3_16", "task_2_9"]
+        },
+        {
+          "id": "task_8_14",
+          "title": "Create Leave Reports",
+          "description": "Implement endpoints for leave analytics: usage reports, pending approvals dashboard, team absence forecast, and balance utilization statistics.",
+          "status": "not_started",
+          "dependencies": ["task_8_2"]
+        },
+        {
+          "id": "task_8_15",
+          "title": "Implement Leave Conflict Detection",
+          "description": "Create business logic for detecting overlapping leave requests, team capacity constraints, and blackout period enforcement.",
+          "status": "not_started",
+          "dependencies": ["task_8_4"]
+        },
+        {
+          "id": "task_8_16",
+          "title": "Create Leave Factory and Seeders",
+          "description": "Implement factory for generating test leave requests and balances with various statuses and historical data for development environment.",
+          "status": "not_started",
+          "dependencies": ["task_8_1"]
+        },
+        {
+          "id": "task_8_17",
+          "title": "Write Leave Domain Tests",
+          "description": "Create unit tests for Leave aggregate business logic, balance calculations, accrual rules, and approval workflow constraints.",
+          "status": "not_started",
+          "dependencies": ["task_3_14", "task_2_14"]
+        },
+        {
+          "id": "task_8_18",
+          "title": "Write Leave API Tests",
+          "description": "Create feature tests for all leave API endpoints including request submission, approval workflow, cancellation, and authorization checks.",
+          "status": "not_started",
+          "dependencies": ["task_8_5", "task_8_6", "task_8_7", "task_2_14"]
+        }
+      ]
+    },
+    {
+      "id": "phase_9",
+      "title": "Filament Admin Panel",
+      "description": "Build comprehensive Laravel Filament admin panel for system administration, data management, and operational oversight.",
+      "tasks": [
+        {
+          "id": "task_9_1",
+          "title": "Install and Configure Filament",
+          "description": "Install Laravel Filament package, publish configuration files, and set up admin panel routing. Configure authentication and authorization for admin access.",
+          "status": "not_started",
+          "dependencies": ["task_2_4", "task_4_7"]
+        },
+        {
+          "id": "task_9_2",
+          "title": "Create Filament User Resource",
+          "description": "Create Filament resource for User management with form fields, table columns, filters, and actions. Include role assignment and password reset capabilities.",
+          "status": "not_started",
+          "dependencies": ["task_9_1", "task_4_2"]
+        },
+        {
+          "id": "task_9_3",
+          "title": "Create Filament Employee Resource",
+          "description": "Create comprehensive Filament resource for Employee management with all CRUD operations, relationship management, and bulk actions.",
+          "status": "not_started",
+          "dependencies": ["task_9_1", "task_5_2"]
+        },
+        {
+          "id": "task_9_4",
+          "title": "Create Filament Team Resource",
+          "description": "Create Filament resource for Team management with nested member management, hierarchy visualization, and team statistics.",
+          "status": "not_started",
+          "dependencies": ["task_9_1", "task_6_2"]
+        },
+        {
+          "id": "task_9_5",
+          "title": "Create Filament Equipment Resource",
+          "description": "Create Filament resource for Equipment management with inventory tracking, assignment management, and maintenance scheduling.",
+          "status": "not_started",
+          "dependencies": ["task_9_1", "task_7_2"]
+        },
+        {
+          "id": "task_9_6",
+          "title": "Create Filament Leave Resource",
+          "description": "Create Filament resource for Leave management with approval actions, balance tracking, and calendar views.",
+          "status": "not_started",
+          "dependencies": ["task_9_1", "task_8_2"]
+        },
+        {
+          "id": "task_9_7",
+          "title": "Create Admin Dashboard",
+          "description": "Build comprehensive admin dashboard with widgets for key metrics: total employees, active leaves, pending approvals, equipment utilization, and recent activities.",
+          "status": "not_started",
+          "dependencies": ["task_9_3", "task_9_4", "task_9_5", "task_9_6"]
+        },
+        {
+          "id": "task_9_8",
+          "title": "Implement Advanced Filters",
+          "description": "Create custom Filament filters for each resource including date ranges, status filters, relationship filters, and saved filter presets.",
+          "status": "not_started",
+          "dependencies": ["task_9_3", "task_9_4", "task_9_5", "task_9_6"]
+        },
+        {
+          "id": "task_9_9",
+          "title": "Create Bulk Actions",
+          "description": "Implement bulk actions for mass operations: bulk employee status changes, bulk equipment assignments, bulk leave approvals, and data export.",
+          "status": "not_started",
+          "dependencies": ["task_9_3", "task_9_4", "task_9_5", "task_9_6"]
+        },
+        {
+          "id": "task_9_10",
+          "title": "Implement Custom Filament Pages",
+          "description": "Create custom pages for reports, system settings, role management, and audit logs. Include interactive charts and data visualizations.",
+          "status": "not_started",
+          "dependencies": ["task_9_7"]
+        },
+        {
+          "id": "task_9_11",
+          "title": "Create Relationship Managers",
+          "description": "Implement Filament relationship managers for managing employee teams, employee equipment, and employee leave history within resource views.",
+          "status": "not_started",
+          "dependencies": ["task_9_3"]
+        },
+        {
+          "id": "task_9_12",
+          "title": "Implement Filament Notifications",
+          "description": "Configure Filament notification system for admin actions, approval workflows, and system alerts. Create notification preferences.",
+          "status": "not_started",
+          "dependencies": ["task_9_1"]
+        },
+        {
+          "id": "task_9_13",
+          "title": "Create Export Functionality",
+          "description": "Implement data export features for all resources supporting CSV, Excel, and PDF formats. Include custom export column configuration.",
+          "status": "not_started",
+          "dependencies": ["task_9_3", "task_9_4", "task_9_5", "task_9_6"]
+        },
+        {
+          "id": "task_9_14",
+          "title": "Implement Import Functionality",
+          "description": "Create data import features for bulk employee creation, equipment inventory uploads, and initial system setup. Include validation and error reporting.",
+          "status": "not_started",
+          "dependencies": ["task_9_3", "task_9_5"]
+        },
+        {
+          "id": "task_9_15",
+          "title": "Create Audit Log Viewer",
+          "description": "Build comprehensive audit log viewer in Filament showing all system changes with user tracking, timestamps, and change details. Include advanced search.",
+          "status": "not_started",
+          "dependencies": ["task_9_10", "task_2_13"]
+        },
+        {
+          "id": "task_9_16",
+          "title": "Implement Global Search",
+          "description": "Configure Filament global search to search across employees, teams, equipment, and leave requests. Include search result ranking and recent searches.",
+          "status": "not_started",
+          "dependencies": ["task_9_3", "task_9_4", "task_9_5", "task_9_6"]
+        },
+        {
+          "id": "task_9_17",
+          "title": "Customize Filament Theme",
+          "description": "Create custom Filament theme matching corporate branding with custom colors, fonts, and layout modifications. Ensure responsive design.",
+          "status": "not_started",
+          "dependencies": ["task_9_1"]
+        }
+      ]
+    },
+    {
+      "id": "phase_10",
+      "title": "Frontend Architecture Setup",
+      "description": "Initialize Vue 3 frontend application with TailwindCSS, configure build tools, establish routing, state management, and API integration layer.",
+      "tasks": [
+        {
+          "id": "task_10_1",
+          "title": "Initialize Vue 3 Project",
+          "description": "Create new Vue 3 project with Vite, configure TypeScript support, and establish project structure with components, views, and composables directories.",
+          "status": "not_started",
+          "dependencies": []
+        },
+        {
+          "id": "task_10_2",
+          "title": "Configure TailwindCSS",
+          "description": "Install and configure TailwindCSS with custom design system, color palette, typography settings, and responsive breakpoints. Set up JIT mode.",
+          "status": "not_started",
+          "dependencies": ["task_10_1"]
+        },
+        {
+          "id": "task_10_3",
+          "title": "Set Up Vue Router",
+          "description": "Install Vue Router, configure route structure with lazy loading, implement navigation guards for authentication, and create route middleware system.",
+          "status": "not_started",
+          "dependencies": ["task_10_1"]
+        },
+        {
+          "id": "task_10_4",
+          "title": "Configure Pinia Store",
+          "description": "Install and configure Pinia for state management. Create store structure for auth, employees, teams, equipment, and leaves with TypeScript types.",
+          "status": "not_started",
+          "dependencies": ["task_10_1"]
+        },
+        {
+          "id": "task_10_5",
+          "title": "Create API Client Layer",
+          "description": "Implement axios-based API client with interceptors for authentication, error handling, and request/response transformation. Create typed API methods.",
+          "status": "not_started",
+          "dependencies": ["task_10_1"]
+        },
+        {
+          "id": "task_10_6",
+          "title": "Implement Authentication Module",
+          "description": "Create authentication store, login/logout composables, token management, and authentication guards. Implement automatic token refresh.",
+          "status": "not_started",
+          "dependencies": ["task_10_4", "task_10_5"]
+        },
+        {
+          "id": "task_10_7",
+          "title": "Create Base Layout Components",
+          "description": "Build layout components including AppLayout, Sidebar, Header, Footer, and navigation menu. Implement responsive behavior and mobile navigation.",
+          "status": "not_started",
+          "dependencies": ["task_10_2", "task_10_3"]
+        },
+        {
+          "id": "task_10_8",
+          "title": "Create UI Component Library",
+          "description": "Build reusable UI components: Button, Input, Select, Modal, Table, Card, Badge, Alert. Ensure accessibility compliance and consistent styling.",
+          "status": "not_started",
+          "dependencies": ["task_10_2"]
+        },
+        {
+          "id": "task_10_9",
+          "title": "Implement Form Handling System",
+          "description": "Create form handling utilities with validation using VeeValidate or similar. Build FormGroup, FormField components with error display.",
+          "status": "not_started",
+          "dependencies": ["task_10_8"]
+        },
+        {
+          "id": "task_10_10",
+          "title": "Create Data Table Component",
+          "description": "Build comprehensive data table component with sorting, filtering, pagination, column configuration, and row actions. Support for async data loading.",
+          "status": "not_started",
+          "dependencies": ["task_10_8"]
+        },
+        {
+          "id": "task_10_11",
+          "title": "Implement Loading States",
+          "description": "Create loading indicator components, skeleton screens for data loading, and global loading overlay. Implement suspense boundaries.",
+          "status": "not_started",
+          "dependencies": ["task_10_8"]
+        },
+        {
+          "id": "task_10_12",
+          "title": "Implement Error Handling",
+          "description": "Create global error handling system with user-friendly error messages, error boundary components, and error logging to backend.",
+          "status": "not_started",
+          "dependencies": ["task_10_5"]
+        },
+        {
+          "id": "task_10_13",
+          "title": "Create Notification System",
+          "description": "Implement toast notification system for success messages, errors, and warnings. Create notification store and display component.",
+          "status": "not_started",
+          "dependencies": ["task_10_4", "task_10_8"]
+        },
+        {
+          "id": "task_10_14",
+          "title": "Implement Responsive Design",
+          "description": "Ensure all components and layouts are fully responsive. Create mobile-first design with appropriate breakpoints and touch-friendly interactions.",
+          "status": "not_started",
+          "dependencies": ["task_10_7", "task_10_8"]
+        },
+        {
+          "id": "task_10_15",
+          "title": "Configure Build and Deployment",
+          "description": "Configure Vite build optimization, code splitting, tree shaking, and production environment variables. Set up deployment scripts.",
+          "status": "not_started",
+          "dependencies": ["task_10_1"]
+        },
+        {
+          "id": "task_10_16",
+          "title": "Set Up Development Tools",
+          "description": "Configure ESLint, Prettier, TypeScript strict mode, and Vue DevTools. Create development scripts and hot module replacement configuration.",
+          "status": "not_started",
+          "dependencies": ["task_10_1"]
+        }
+      ]
+    },
+    {
+      "id": "phase_11",
+      "title": "REST API Integration",
+      "description": "Build frontend views and functionality integrating with backend REST API for all modules including employees, teams, equipment, and leave management.",
+      "tasks": [
+        {
+          "id": "task_11_1",
+          "title": "Create Authentication Views",
+          "description": "Build login page, password reset page, and registration page. Implement form validation, error handling, and redirect logic after authentication.",
+          "status": "not_started",
+          "dependencies": ["task_10_6", "task_10_9"]
+        },
+        {
+          "id": "task_11_2",
+          "title": "Create Dashboard View",
+          "description": "Build main dashboard with widgets showing personal information, team overview, assigned equipment, upcoming leave, and quick actions.",
+          "status": "not_started",
+          "dependencies": ["task_10_7"]
+        },
+        {
+          "id": "task_11_3",
+          "title": "Create Employee List View",
+          "description": "Build employee list page with data table, search functionality, filters, sorting, and pagination. Integrate with GET /api/employees endpoint.",
+          "status": "not_started",
+          "dependencies": ["task_10_10", "task_5_5"]
+        },
+        {
+          "id": "task_11_4",
+          "title": "Create Employee Detail View",
+          "description": "Build employee detail page showing complete employee information, team memberships, assigned equipment, leave history, and action buttons.",
+          "status": "not_started",
+          "dependencies": ["task_11_3", "task_5_5"]
+        },
+        {
+          "id": "task_11_5",
+          "title": "Create Employee Form Component",
+          "description": "Build reusable employee form for creating and editing employees. Include all fields with validation, photo upload, and date pickers.",
+          "status": "not_started",
+          "dependencies": ["task_10_9", "task_5_5"]
+        },
+        {
+          "id": "task_11_6",
+          "title": "Implement Employee Actions",
+          "description": "Implement actions for position change, location change, remote work configuration, and termination. Create confirmation modals and success notifications.",
+          "status": "not_started",
+          "dependencies": ["task_11_4", "task_5_6", "task_5_7", "task_5_9"]
+        },
+        {
+          "id": "task_11_7",
+          "title": "Create Team List View",
+          "description": "Build team list page with team cards or table view, team statistics, member count, and team hierarchy visualization.",
+          "status": "not_started",
+          "dependencies": ["task_10_10", "task_6_5"]
+        },
+        {
+          "id": "task_11_8",
+          "title": "Create Team Detail View",
+          "description": "Build team detail page with team information, member list, team lead, equipment assigned to team, and team action buttons.",
+          "status": "not_started",
+          "dependencies": ["task_11_7", "task_6_5"]
+        },
+        {
+          "id": "task_11_9",
+          "title": "Create Team Form Component",
+          "description": "Build reusable team form for creating and editing teams. Include team hierarchy selection and team type configuration.",
+          "status": "not_started",
+          "dependencies": ["task_10_9", "task_6_5"]
+        },
+        {
+          "id": "task_11_10",
+          "title": "Implement Team Member Management",
+          "description": "Create UI for assigning employees to teams, removing members, changing roles, and transferring between teams. Include drag-and-drop support.",
+          "status": "not_started",
+          "dependencies": ["task_11_8", "task_6_6", "task_6_8"]
+        },
+        {
+          "id": "task_11_11",
+          "title": "Create Equipment List View",
+          "description": "Build equipment inventory page with filtering by type, status, and availability. Show equipment specifications and assignment status.",
+          "status": "not_started",
+          "dependencies": ["task_10_10", "task_7_5"]
+        },
+        {
+          "id": "task_11_12",
+          "title": "Create Equipment Detail View",
+          "description": "Build equipment detail page showing specifications, current assignment, assignment history, maintenance records, and available actions.",
+          "status": "not_started",
+          "dependencies": ["task_11_11", "task_7_5"]
+        },
+        {
+          "id": "task_11_13",
+          "title": "Create Equipment Form Component",
+          "description": "Build equipment form for adding new equipment with all specifications, purchase information, and warranty details.",
+          "status": "not_started",
+          "dependencies": ["task_10_9", "task_7_5"]
+        },
+        {
+          "id": "task_11_14",
+          "title": "Implement Equipment Actions",
+          "description": "Create UI for issuing equipment, processing returns, transferring between employees, and scheduling maintenance. Include assignment modal.",
+          "status": "not_started",
+          "dependencies": ["task_11_12", "task_7_6", "task_7_7", "task_7_8"]
+        },
+        {
+          "id": "task_11_15",
+          "title": "Create Leave Request View",
+          "description": "Build leave request form with date range picker, leave type selection, balance display, and conflict warnings. Show calendar availability.",
+          "status": "not_started",
+          "dependencies": ["task_10_9", "task_8_5", "task_8_6"]
+        },
+        {
+          "id": "task_11_16",
+          "title": "Create Leave List View",
+          "description": "Build leave history page showing all leave requests with status, filters by type and date range, and action buttons for pending requests.",
+          "status": "not_started",
+          "dependencies": ["task_10_10", "task_8_5"]
+        },
+        {
+          "id": "task_11_17",
+          "title": "Create Leave Calendar View",
+          "description": "Build calendar view showing team leave schedule with color coding by leave type. Include month/week/day views and conflict highlighting.",
+          "status": "not_started",
+          "dependencies": ["task_8_10"]
+        },
+        {
+          "id": "task_11_18",
+          "title": "Implement Leave Approval Interface",
+          "description": "Create admin/manager interface for reviewing and approving leave requests. Include approval comments, batch approval, and notification triggers.",
+          "status": "not_started",
+          "dependencies": ["task_11_16", "task_8_7"]
+        },
+        {
+          "id": "task_11_19",
+          "title": "Create User Profile View",
+          "description": "Build user profile page for viewing and editing personal information, changing password, viewing leave balances, and assigned equipment.",
+          "status": "not_started",
+          "dependencies": ["task_10_7"]
+        },
+        {
+          "id": "task_11_20",
+          "title": "Implement Role-Based UI",
+          "description": "Add conditional rendering based on user roles. Show/hide admin features, restrict actions for regular employees, and implement permission-based routing.",
+          "status": "not_started",
+          "dependencies": ["task_10_6"]
+        },
+        {
+          "id": "task_11_21",
+          "title": "Create Reports and Analytics Views",
+          "description": "Build reports page with charts for employee statistics, team composition, equipment utilization, and leave analytics. Use Chart.js or similar library.",
+          "status": "not_started",
+          "dependencies": ["task_10_7"]
+        },
+        {
+          "id": "task_11_22",
+          "title": "Implement Search Functionality",
+          "description": "Create global search feature for finding employees, teams, and equipment. Include search results page with filtering and result previews.",
+          "status": "not_started",
+          "dependencies": ["task_10_5"]
+        },
+        {
+          "id": "task_11_23",
+          "title": "Optimize Performance",
+          "description": "Implement lazy loading for routes, optimize bundle size, add caching strategies for API responses, and implement virtual scrolling for large lists.",
+          "status": "not_started",
+          "dependencies": ["task_11_3", "task_11_7", "task_11_11"]
+        },
+        {
+          "id": "task_11_24",
+          "title": "Add PWA Support",
+          "description": "Configure Progressive Web App features including service workers, offline support, app manifest, and install prompts for mobile devices.",
+          "status": "not_started",
+          "dependencies": ["task_10_15"]
+        },
+        {
+          "id": "task_11_25",
+          "title": "Write Frontend Tests",
+          "description": "Create component tests using Vitest and Vue Test Utils. Write E2E tests using Playwright or Cypress for critical user flows.",
+          "status": "not_started",
+          "dependencies": ["task_11_1", "task_11_3", "task_11_15"]
+        },
+        {
+          "id": "task_11_26",
+          "title": "Perform Integration Testing",
+          "description": "Conduct comprehensive integration testing between frontend and backend. Test all API endpoints, error scenarios, and edge cases.",
+          "status": "not_started",
+          "dependencies": ["task_11_25"]
+        },
+        {
+          "id": "task_11_27",
+          "title": "Accessibility Audit",
+          "description": "Perform accessibility audit ensuring WCAG 2.1 AA compliance. Add ARIA labels, keyboard navigation, screen reader support, and focus management.",
+          "status": "not_started",
+          "dependencies": ["task_10_14"]
+        },
+        {
+          "id": "task_11_28",
+          "title": "Cross-Browser Testing",
+          "description": "Test application across major browsers (Chrome, Firefox, Safari, Edge) and mobile devices. Fix compatibility issues and ensure consistent experience.",
+          "status": "not_started",
+          "dependencies": ["task_11_26"]
+        },
+        {
+          "id": "task_11_29",
+          "title": "Performance Optimization",
+          "description": "Conduct performance audit, optimize image loading, implement code splitting, minimize JavaScript bundle, and achieve Lighthouse score >90.",
+          "status": "not_started",
+          "dependencies": ["task_11_23"]
+        },
+        {
+          "id": "task_11_30",
+          "title": "Security Hardening",
+          "description": "Implement security best practices including XSS prevention, CSRF protection, secure token storage, input sanitization, and CSP headers.",
+          "status": "not_started",
+          "dependencies": ["task_11_26"]
+        },
+        {
+          "id": "task_11_31",
+          "title": "Documentation and Handover",
+          "description": "Create comprehensive documentation including API documentation, component documentation, deployment guide, and user manual.",
+          "status": "not_started",
+          "dependencies": ["task_11_28", "task_11_29", "task_11_30"]
+        }
+      ]
+    },
+    {
+      "id": "phase_12",
+      "title": "Quality Assurance and Deployment",
+      "description": "Comprehensive testing, performance optimization, security audit, and production deployment preparation.",
+      "tasks": [
+        {
+          "id": "task_12_1",
+          "title": "Execute Full Test Suite",
+          "description": "Run complete test suite including unit tests, integration tests, and feature tests across all domains. Ensure 90%+ code coverage.",
+          "status": "not_started",
+          "dependencies": ["task_5_16", "task_6_16", "task_7_17", "task_8_18"]
+        },
+        {
+          "id": "task_12_2",
+          "title": "Perform Load Testing",
+          "description": "Conduct load testing using tools like Apache JMeter or k6. Test API endpoints under high concurrent user load and identify bottlenecks.",
+          "status": "not_started",
+          "dependencies": ["task_11_26"]
+        },
+        {
+          "id": "task_12_3",
+          "title": "Execute Security Audit",
+          "description": "Perform comprehensive security audit checking for SQL injection, XSS, CSRF, authentication bypasses, and other OWASP Top 10 vulnerabilities.",
+          "status": "not_started",
+          "dependencies": ["task_4_13", "task_11_30"]
+        },
+        {
+          "id": "task_12_4",
+          "title": "Optimize Database Performance",
+          "description": "Analyze and optimize database queries, add missing indexes, implement query caching, and optimize N+1 query problems.",
+          "status": "not_started",
+          "dependencies": ["task_12_2"]
+        },
+        {
+          "id": "task_12_5",
+          "title": "Configure Production Environment",
+          "description": "Set up production server environment with PHP 8.2, database, Redis for queues and cache, configure web server (Nginx), and SSL certificates.",
+          "status": "not_started",
+          "dependencies": []
+        },
+        {
+          "id": "task_12_6",
+          "title": "Configure Queue Workers",
+          "description": "Set up Laravel queue workers with supervisor for production. Configure worker scaling, failure handling, and monitoring.",
+          "status": "not_started",
+          "dependencies": ["task_12_5"]
+        },
+        {
+          "id": "task_12_7",
+          "title": "Configure Backup Strategy",
+          "description": "Implement automated database backup with retention policies, implement application file backup, and test restore procedures.",
+          "status": "not_started",
+          "dependencies": ["task_12_5"]
+        },
+        {
+          "id": "task_12_8",
+          "title": "Set Up Monitoring",
+          "description": "Configure application monitoring with tools like New Relic or Sentry. Set up error tracking, performance monitoring, and alerting.",
+          "status": "not_started",
+          "dependencies": ["task_12_5"]
+        },
+        {
+          "id": "task_12_9",
+          "title": "Configure Logging Infrastructure",
+          "description": "Set up centralized logging with ELK stack or similar. Configure log aggregation, log rotation, and log analysis dashboards.",
+          "status": "not_started",
+          "dependencies": ["task_12_5"]
+        },
+        {
+          "id": "task_12_10",
+          "title": "Create Deployment Pipeline",
+          "description": "Create automated deployment pipeline with zero-downtime deployment, rollback capabilities, and environment-specific configurations.",
+          "status": "not_started",
+          "dependencies": ["task_2_15", "task_12_5"]
+        },
+        {
+          "id": "task_12_11",
+          "title": "Configure CDN",
+          "description": "Set up CDN for static assets including frontend bundle, images, and fonts. Configure cache headers and invalidation strategies.",
+          "status": "not_started",
+          "dependencies": ["task_10_15"]
+        },
+        {
+          "id": "task_12_12",
+          "title": "Perform UAT",
+          "description": "Conduct User Acceptance Testing with stakeholders. Document feedback, prioritize issues, and implement critical fixes.",
+          "status": "not_started",
+          "dependencies": ["task_11_31"]
+        },
+        {
+          "id": "task_12_13",
+          "title": "Create Runbooks",
+          "description": "Create operational runbooks for common scenarios: deployment, rollback, database migration, queue management, and incident response.",
+          "status": "not_started",
+          "dependencies": ["task_12_10"]
+        },
+        {
+          "id": "task_12_14",
+          "title": "Prepare Production Data",
+          "description": "Create production database seeders for initial data: roles, leave types, equipment categories. Prepare data migration scripts if migrating from existing system.",
+          "status": "not_started",
+          "dependencies": ["task_12_5"]
+        },
+        {
+          "id": "task_12_15",
+          "title": "Configure Rate Limiting",
+          "description": "Implement API rate limiting to prevent abuse. Configure different limits for authenticated and anonymous requests.",
+          "status": "not_started",
+          "dependencies": ["task_12_5"]
+        },
+        {
+          "id": "task_12_16",
+          "title": "Execute Staging Deployment",
+          "description": "Deploy application to staging environment. Perform smoke tests, verify all integrations, and test with staging data.",
+          "status": "not_started",
+          "dependencies": ["task_12_10", "task_12_14"]
+        },
+        {
+          "id": "task_12_17",
+          "title": "Conduct Performance Benchmarking",
+          "description": "Establish performance benchmarks for key operations. Document baseline metrics for response times, throughput, and resource utilization.",
+          "status": "not_started",
+          "dependencies": ["task_12_16"]
+        },
+        {
+          "id": "task_12_18",
+          "title": "Execute Production Deployment",
+          "description": "Deploy application to production environment following deployment checklist. Monitor deployment, verify health checks, and confirm all services are operational.",
+          "status": "not_started",
+          "dependencies": ["task_12_16", "task_12_17"]
+        },
+        {
+          "id": "task_12_19",
+          "title": "Post-Deployment Verification",
+          "description": "Perform post-deployment verification checks including smoke tests, critical path testing, and monitoring for errors or performance issues.",
+          "status": "not_started",
+          "dependencies": ["task_12_18"]
+        },
+        {
+          "id": "task_12_20",
+          "title": "Create Support Documentation",
+          "description": "Create support documentation for help desk including common issues, troubleshooting guides, FAQ, and escalation procedures.",
+          "status": "not_started",
+          "dependencies": ["task_11_31"]
+        },
+        {
+          "id": "task_12_21",
+          "title": "Conduct Team Training",
+          "description": "Conduct training sessions for administrators and end users. Create training materials, video tutorials, and hands-on workshop sessions.",
+          "status": "not_started",
+          "dependencies": ["task_12_18", "task_12_20"]
+        },
+        {
+          "id": "task_12_22",
+          "title": "Establish SLA and Support",
+          "description": "Define Service Level Agreements, establish support channels, create on-call rotation, and set up incident management procedures.",
+          "status": "not_started",
+          "dependencies": ["task_12_21"]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "generated_at": "2025-12-07T00:00:00Z",
+    "project_name": "IT Employee Management System",
+    "architecture": "DDD + Event-Driven + REST API",
+    "technology_stack": {
+      "backend": {
+        "language": "PHP 8.2",
+        "framework": "Laravel 12",
+        "admin_panel": "Laravel Filament",
+        "architecture": "Domain-Driven Design",
+        "communication": "Event-Driven",
+        "api": "RESTful",
+        "async": "Laravel Queues",
+        "testing": "Pest"
+      },
+      "frontend": {
+        "framework": "Vue 3",
+        "styling": "TailwindCSS",
+        "state_management": "Pinia",
+        "communication": "REST API only"
+      }
+    },
+    "core_features": [
+      "Employee Management (CRUD, lifecycle)",
+      "Team Management (assignment, transfers)",
+      "Equipment Management (issue, track, return)",
+      "Leave Management (vacation, sick leave)",
+      "Role-Based Access Control (Admin, Employee)",
+      "Event-Driven Internal Communication",
+      "Comprehensive Audit Logging",
+      "Asynchronous Job Processing"
+    ],
+    "quality_attributes": {
+      "security": "Authentication, Authorization, Audit Trails",
+      "scalability": "Queue Workers, Horizontal Scaling Ready",
+      "maintainability": "Clean Architecture, SOLID Principles, DDD",
+      "testability": "Comprehensive Test Coverage with Pest"
+    }
+  }
+}
+
