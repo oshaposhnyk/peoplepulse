@@ -24,10 +24,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             \Domain\Equipment\Repositories\EquipmentRepositoryInterface::class,
-            function () {
-                // Will be implemented in Phase 7
-                throw new \RuntimeException('EquipmentRepository not yet implemented');
-            }
+            \Infrastructure\Persistence\Eloquent\Repositories\EquipmentRepository::class
         );
 
         $this->app->bind(

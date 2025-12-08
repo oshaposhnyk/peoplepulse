@@ -61,8 +61,19 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
             ->name('api.teams.members');
     });
     
-    // Equipment endpoints (to be implemented in Phase 7)
-    // Route::apiResource('equipment', EquipmentController::class);
+    // Equipment endpoints
+    Route::apiResource('equipment', \App\Http\Controllers\Api\EquipmentController::class);
+    
+    Route::prefix('equipment/{equipmentId}')->group(function () {
+        Route::post('/issue', [\App\Http\Controllers\Api\EquipmentController::class, 'issue'])
+            ->name('api.equipment.issue');
+        Route::post('/return', [\App\Http\Controllers\Api\EquipmentController::class, 'return'])
+            ->name('api.equipment.return');
+        Route::post('/transfer', [\App\Http\Controllers\Api\EquipmentController::class, 'transfer'])
+            ->name('api.equipment.transfer');
+        Route::get('/history', [\App\Http\Controllers\Api\EquipmentController::class, 'history'])
+            ->name('api.equipment.history');
+    });
     
     // Leave endpoints (to be implemented in Phase 8)
     // Route::apiResource('leaves', LeaveController::class);
