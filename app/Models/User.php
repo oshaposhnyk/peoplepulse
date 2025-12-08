@@ -19,9 +19,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'employee_id',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,6 +45,58 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'is_locked' => 'boolean',
+            'locked_until' => 'datetime',
+            'password_changed_at' => 'datetime',
+            'last_login_at' => 'datetime',
+            'mfa_enabled' => 'boolean',
+            'mfa_backup_codes' => 'array',
         ];
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'Admin';
+    }
+
+    /**
+     * Check if user is employee
+     */
+    public function isEmployee(): bool
+    {
+        return $this->role === 'Employee';
+    }
+
+    /**
+     * Check if account is locked
+     */
+    public function isLocked(): bool
+    {
+        if (!$this->is_locked) {
+            return false;
+        }
+
+        // Auto-unlock if lock period expired
+        if ($this->locked_until && $this->locked_until->isPast()) {
+            $this->update([
+                'is_locked' => false,
+                'locked_until' => null,
+            ]);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Relationship to employee
+     */
+    public function employee()
+    {
+        return $this->belongsTo(\App\Models\Employee::class, 'employee_id');
     }
 }
