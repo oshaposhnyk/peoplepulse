@@ -87,6 +87,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
             ->name('api.equipment.transfer');
         Route::post('/maintenance', [\App\Http\Controllers\Api\EquipmentController::class, 'maintenance'])
             ->name('api.equipment.maintenance');
+        Route::post('/maintenance/complete', [\App\Http\Controllers\Api\EquipmentController::class, 'completeMaintenance'])
+            ->name('api.equipment.maintenance.complete');
         Route::get('/history', [\App\Http\Controllers\Api\EquipmentController::class, 'history'])
             ->name('api.equipment.history');
     });

@@ -7,6 +7,7 @@ namespace Application\DTOs\Employee;
 final readonly class UpdateEmployeeDTO
 {
     public function __construct(
+        public ?string $email = null,
         public ?string $phone = null,
         public ?string $addressStreet = null,
         public ?string $addressCity = null,
@@ -23,6 +24,7 @@ final readonly class UpdateEmployeeDTO
     public static function fromArray(array $data): self
     {
         return new self(
+            email: $data['email'] ?? null,
             phone: $data['phone'] ?? null,
             addressStreet: $data['address']['street'] ?? null,
             addressCity: $data['address']['city'] ?? null,

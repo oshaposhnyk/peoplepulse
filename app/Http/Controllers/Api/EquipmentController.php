@@ -9,6 +9,7 @@ use App\Http\Requests\Api\Equipment\CreateEquipmentRequest;
 use App\Http\Requests\Api\Equipment\IssueEquipmentRequest;
 use App\Http\Requests\Api\Equipment\ReturnEquipmentRequest;
 use App\Http\Requests\Api\Equipment\ScheduleMaintenanceRequest;
+use App\Http\Requests\Api\Equipment\CompleteMaintenanceRequest;
 use App\Http\Requests\Api\Equipment\TransferEquipmentRequest;
 use App\Http\Requests\Api\Equipment\DecommissionEquipmentRequest;
 use App\Http\Resources\EquipmentResource;
@@ -158,6 +159,27 @@ class EquipmentController extends Controller
             'success' => true,
             'message' => 'Maintenance scheduled successfully',
         ], 201);
+    }
+
+    /**
+     * Complete equipment maintenance
+     */
+    public function completeMaintenance(CompleteMaintenanceRequest $request, string $equipmentId): JsonResponse
+    {
+        $this->equipmentService->completeMaintenance(
+            $equipmentId,
+            $request->maintenanceId,
+            $request->completedDate,
+            $request->actualCost,
+            $request->workPerformed,
+            $request->partsReplaced,
+            $request->warrantyWork ?? false
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Maintenance completed successfully',
+        ]);
     }
 
     /**

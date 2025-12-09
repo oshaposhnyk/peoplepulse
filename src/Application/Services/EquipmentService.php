@@ -257,6 +257,70 @@ class EquipmentService extends BaseService
     }
 
     /**
+     * Complete equipment maintenance
+     */
+    public function completeMaintenance(
+        string $equipmentId,
+        ?int $maintenanceId = null,
+        ?string $completedDate = null,
+        ?float $actualCost = null,
+        ?string $workPerformed = null,
+        ?array $partsReplaced = null,
+        bool $warrantyWork = false
+    ): void {
+        $this->transaction(function () use ($equipmentId, $maintenanceId, $completedDate, $actualCost, $workPerformed, $partsReplaced, $warrantyWork) {
+            $equipment = EquipmentModel::findOrFail($equipmentId);
+
+            // Find the maintenance record
+            if ($maintenanceId) {
+                $maintenance = EquipmentMaintenance::where('id', $maintenanceId)
+                    ->where('equipment_id', $equipmentId)
+                    ->firstOrFail();
+            } else {
+                // Find the most recent scheduled or in-progress maintenance
+                $maintenance = EquipmentMaintenance::where('equipment_id', $equipmentId)
+                    ->whereIn('status', ['Scheduled', 'InProgress'])
+                    ->orderBy('scheduled_date', 'desc')
+                    ->firstOrFail();
+            }
+
+            // Calculate actual duration if completed date is provided
+            $actualDuration = null;
+            if ($completedDate && $maintenance->scheduled_date) {
+                // Use Carbon for date calculations
+                $scheduled = \Carbon\Carbon::parse($maintenance->scheduled_date);
+                $completed = \Carbon\Carbon::parse($completedDate);
+                $actualDuration = $scheduled->diffInDays($completed) + 1;
+            }
+
+            // Update maintenance record
+            $maintenance->update([
+                'status' => 'Completed',
+                'completed_date' => $completedDate ?: now()->format('Y-m-d'),
+                'actual_duration_days' => $actualDuration ?? $maintenance->expected_duration_days,
+                'actual_cost' => $actualCost,
+                'work_performed' => $workPerformed,
+                'parts_replaced' => $partsReplaced,
+                'warranty_work' => $warrantyWork,
+                'completed_by' => auth()->user()?->employee_id,
+            ]);
+
+            // Update equipment status to Available
+            if ($equipment->status === 'InMaintenance') {
+                $equipment->update([
+                    'status' => 'Available',
+                ]);
+            }
+
+            AuditLogger::equipment('maintenance_completed', $equipmentId, [
+                'maintenanceId' => $maintenance->id,
+                'completedDate' => $completedDate,
+                'actualCost' => $actualCost,
+            ]);
+        });
+    }
+
+    /**
      * Decommission equipment
      */
     public function decommission(string $equipmentId, string $reason, string $disposalMethod): void

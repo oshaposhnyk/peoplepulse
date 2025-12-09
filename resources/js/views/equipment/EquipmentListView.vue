@@ -110,6 +110,13 @@
                   >
                     {{ $t('equipment.maintenance') }}
                   </button>
+                  <button
+                    v-if="item.status === 'InMaintenance'"
+                    @click="openCompleteMaintenanceModal(item)"
+                    class="text-sm text-green-600 hover:text-green-900 font-medium"
+                  >
+                    {{ $t('equipment.completeMaintenance') }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -357,6 +364,99 @@
             </div>
           </form>
         </Modal>
+
+        <!-- Complete Maintenance Modal -->
+        <Modal v-model="showCompleteMaintenanceModal">
+          <h3 class="text-lg font-bold mb-4 text-gray-900">{{ $t('equipment.completeMaintenance') }}</h3>
+          <div v-if="selectedEquipment" class="mb-4 p-3 bg-gray-50 rounded">
+            <p class="text-sm font-medium text-gray-700">
+              {{ selectedEquipment.brand }} {{ selectedEquipment.model }}
+            </p>
+            <p class="text-xs text-gray-500">{{ selectedEquipment.assetTag }}</p>
+          </div>
+          <form @submit.prevent="completeMaintenance" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('equipment.completedDate') }}</label>
+              <input 
+                v-model="completeMaintenanceForm.completedDate" 
+                type="date"
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('equipment.actualCost') }} (USD)</label>
+              <input 
+                v-model.number="completeMaintenanceForm.actualCost" 
+                type="number"
+                min="0"
+                step="0.01"
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('equipment.workPerformed') }}</label>
+              <textarea 
+                v-model="completeMaintenanceForm.workPerformed" 
+                rows="4"
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                :placeholder="$t('equipment.workPerformedPlaceholder')"
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('equipment.partsReplaced') }}</label>
+              <div class="space-y-2">
+                <div v-for="(part, index) in completeMaintenanceForm.partsReplaced" :key="index" class="flex gap-2">
+                  <input 
+                    v-model="completeMaintenanceForm.partsReplaced[index]" 
+                    type="text"
+                    class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    :placeholder="$t('equipment.partName')"
+                  />
+                  <button 
+                    type="button"
+                    @click="completeMaintenanceForm.partsReplaced.splice(index, 1)"
+                    class="px-3 py-1 text-red-600 hover:text-red-900"
+                  >
+                    {{ $t('common.delete') }}
+                  </button>
+                </div>
+                <button 
+                  type="button"
+                  @click="completeMaintenanceForm.partsReplaced.push('')"
+                  class="text-sm text-indigo-600 hover:text-indigo-900"
+                >
+                  + {{ $t('equipment.addPart') }}
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="flex items-center">
+                <input 
+                  type="checkbox" 
+                  v-model="completeMaintenanceForm.warrantyWork" 
+                  class="rounded mr-2"
+                >
+                <span class="text-sm text-gray-700">{{ $t('equipment.warrantyWork') }}</span>
+              </label>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button 
+                type="submit" 
+                :disabled="completeMaintenanceSubmitting"
+                class="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:opacity-50"
+              >
+                {{ completeMaintenanceSubmitting ? $t('equipment.completing') : $t('equipment.completeMaintenance') }}
+              </button>
+              <button 
+                type="button"
+                @click="showCompleteMaintenanceModal = false"
+                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                {{ $t('common.cancel') }}
+              </button>
+            </div>
+          </form>
+        </Modal>
       </div>
     </div>
   </AppLayout>
@@ -446,6 +546,17 @@ const maintenanceSubmitting = ref(false)
 const maintenanceForm = ref({
   reason: '',
   expectedReturnDate: ''
+})
+
+// Complete Maintenance Modal
+const showCompleteMaintenanceModal = ref(false)
+const completeMaintenanceSubmitting = ref(false)
+const completeMaintenanceForm = ref({
+  completedDate: new Date().toISOString().split('T')[0],
+  actualCost: null as number | null,
+  workPerformed: '',
+  partsReplaced: [] as string[],
+  warrantyWork: false
 })
 
 async function fetchEquipment() {
@@ -555,6 +666,42 @@ async function sendToMaintenance() {
     showToast({ message: error.response?.data?.message || t('equipment.maintenanceFailed'), type: 'error' })
   } finally {
     maintenanceSubmitting.value = false
+  }
+}
+
+function openCompleteMaintenanceModal(item: any) {
+  selectedEquipment.value = item
+  showCompleteMaintenanceModal.value = true
+  // Reset form
+  completeMaintenanceForm.value = {
+    completedDate: new Date().toISOString().split('T')[0],
+    actualCost: null,
+    workPerformed: '',
+    partsReplaced: [],
+    warrantyWork: false
+  }
+}
+
+async function completeMaintenance() {
+  completeMaintenanceSubmitting.value = true
+  try {
+    await api.post(`/equipment/${selectedEquipment.value.id}/maintenance/complete`, {
+      completedDate: completeMaintenanceForm.value.completedDate,
+      actualCost: completeMaintenanceForm.value.actualCost,
+      workPerformed: completeMaintenanceForm.value.workPerformed,
+      partsReplaced: completeMaintenanceForm.value.partsReplaced.filter(p => p.trim() !== ''),
+      warrantyWork: completeMaintenanceForm.value.warrantyWork
+    })
+    showCompleteMaintenanceModal.value = false
+    selectedEquipment.value = null
+    // Reload equipment
+    await fetchEquipment()
+    showToast({ message: t('equipment.maintenanceCompleted'), type: 'success' })
+  } catch (error: any) {
+    console.error('Failed to complete maintenance:', error)
+    showToast({ message: error.response?.data?.message || t('equipment.completeMaintenanceFailed'), type: 'error' })
+  } finally {
+    completeMaintenanceSubmitting.value = false
   }
 }
 

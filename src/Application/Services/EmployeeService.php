@@ -78,6 +78,18 @@ class EmployeeService extends BaseService
 
             $changes = [];
 
+            if ($dto->email) {
+                $model->email = $dto->email;
+                $changes['email'] = $dto->email;
+                
+                // Update email in User model if exists
+                $user = \App\Models\User::where('employee_id', $model->id)->first();
+                if ($user) {
+                    $user->email = $dto->email;
+                    $user->save();
+                }
+            }
+
             if ($dto->phone) {
                 $model->phone = $dto->phone;
                 $changes['phone'] = $dto->phone;

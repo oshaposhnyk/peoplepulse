@@ -381,7 +381,7 @@ async function changePosition() {
   positionSubmitting.value = true
   try {
     const employeeId = route.params.id as string
-    await api.post(`/employees/${employeeId}/change-position`, positionForm.value)
+    await api.post(`/employees/${employeeId}/position`, positionForm.value)
     showPositionModal.value = false
     // Reload employee data
     await employeeStore.fetchEmployee(employeeId)

@@ -26,6 +26,7 @@
                 <option value="Approved">{{ $t('leave.approved') }}</option>
                 <option value="Rejected">{{ $t('leave.rejected') }}</option>
                 <option value="Cancelled">{{ $t('leave.cancelled') }}</option>
+                <option value="Completed">{{ $t('leave.completed') }}</option>
               </select>
               <select
                 v-model="typeFilter"
@@ -37,6 +38,8 @@
                 <option value="Sick">{{ $t('leave.sick') }}</option>
                 <option value="Personal">{{ $t('leave.personal') }}</option>
                 <option value="Unpaid">{{ $t('leave.unpaid') }}</option>
+                <option value="Bereavement">{{ $t('leave.bereavement') }}</option>
+                <option value="Parental">{{ $t('leave.parental') }}</option>
               </select>
             </div>
 
@@ -63,7 +66,7 @@
                   <tr v-for="leave in leaves" :key="leave.id" class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ leave.id }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ leave.employeeName }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ leave.leaveType }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $t(`leave.${leave.leaveType.toLowerCase()}`) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {{ leave.startDate }} {{ $t('common.to') }} {{ leave.endDate }}
                     </td>
@@ -75,10 +78,11 @@
                           'bg-green-100 text-green-800': leave.status === 'Approved',
                           'bg-red-100 text-red-800': leave.status === 'Rejected',
                           'bg-gray-100 text-gray-800': leave.status === 'Cancelled',
+                          'bg-blue-100 text-blue-800': leave.status === 'Completed',
                         }"
                         class="px-2 py-1 text-xs font-semibold rounded-full"
                       >
-                        {{ leave.status }}
+                        {{ $t(`leave.${leave.status.toLowerCase()}`) }}
                       </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
