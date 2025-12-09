@@ -40,8 +40,8 @@ class ProfileController extends Controller
                 ], 404);
             }
 
-            // Get employee model from database by employee_id (string identifier)
-            $employeeModel = \Infrastructure\Persistence\Eloquent\Models\Employee::where('employee_id', $user->employee_id)->first();
+            // Get employee model from database by id (user->employee_id is the integer primary key)
+            $employeeModel = \Infrastructure\Persistence\Eloquent\Models\Employee::where('id', $user->employee_id)->first();
             
             \Log::info('Profile show: Employee search result', [
                 'user_employee_id' => $user->employee_id,
@@ -72,7 +72,7 @@ class ProfileController extends Controller
                 ->join('teams', 'team_members.team_id', '=', 'teams.id')
                 ->where('team_members.employee_id', $employeeModel->id)
                 ->whereNull('team_members.removed_at')
-                ->select('teams.id', 'teams.team_id', 'teams.name', 'team_members.role')
+                ->select('teams.team_id as id', 'teams.team_id', 'teams.name', 'team_members.role')
                 ->get();
             
             $employeeData['teams'] = $teams;
@@ -114,7 +114,7 @@ class ProfileController extends Controller
                 ], 404);
             }
 
-            $employee = Employee::where('employee_id', $user->employee_id)->first();
+            $employee = Employee::where('id', $user->employee_id)->first();
             
             if (!$employee) {
                 return response()->json([
@@ -178,14 +178,14 @@ class ProfileController extends Controller
                 ->join('teams', 'team_members.team_id', '=', 'teams.id')
                 ->where('team_members.employee_id', $employeeModel->id)
                 ->whereNull('team_members.removed_at')
-                ->select('teams.id', 'teams.team_id', 'teams.name', 'team_members.role')
+                ->select('teams.team_id as id', 'teams.team_id', 'teams.name', 'team_members.role')
                 ->get();
             
             $employeeData['teams'] = $teams;
 
             // Remove sensitive data for non-admin users
             $currentUser = $request->user();
-            if (!$currentUser->isAdmin() && $currentUser->employee_id !== $employeeModel->employee_id) {
+            if (!$currentUser->isAdmin() && $currentUser->employee_id !== $employeeModel->id) {
                 // Hide salary information for non-admin viewing other profiles
                 unset($employeeData['salary']);
             }

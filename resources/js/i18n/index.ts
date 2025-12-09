@@ -235,6 +235,17 @@ const messages = {
       actions: 'Actions',
       create: 'Create'
     },
+    impersonation: {
+      loginAs: 'Login as',
+      stopImpersonating: 'Stop Impersonating',
+      loggedInAs: 'Logged in as',
+      impersonationWarning: 'You are currently logged in as another user. All actions will be performed on their behalf.',
+      confirmImpersonate: 'Are you sure you want to login as this user? You will be able to see and perform actions as them.',
+      impersonationStarted: 'Impersonation started successfully',
+      impersonationStopped: 'Impersonation stopped successfully',
+      impersonationFailed: 'Failed to start impersonation',
+      stopImpersonationFailed: 'Failed to stop impersonation'
+    },
     profile: {
       contactInformation: 'Contact Information',
       employmentDetails: 'Employment Details',
@@ -258,7 +269,16 @@ const messages = {
       equipmentInventory: 'Equipment Inventory',
       equipmentInventoryDesc: 'Track hardware and assignments',
       leaveManagement: 'Leave Management',
-      leaveManagementDesc: 'Manage vacation and sick leave'
+      leaveManagementDesc: 'Manage vacation and sick leave',
+      myPendingLeaves: 'My Pending Leaves',
+      myApprovedLeaves: 'My Approved Leaves',
+      myEquipment: 'My Equipment',
+      myTeam: 'My Team',
+      quickActions: 'Quick Actions',
+      myLeaves: 'My Leave Requests',
+      myLeavesDesc: 'View and manage your leave requests',
+      myProfile: 'My Profile',
+      myProfileDesc: 'View and update your profile information'
     }
   },
   uk: {
@@ -495,6 +515,17 @@ const messages = {
       actions: 'Дії',
       create: 'Створити'
     },
+    impersonation: {
+      loginAs: 'Увійти як',
+      stopImpersonating: 'Зупинити імперсонацію',
+      loggedInAs: 'Увійшли як',
+      impersonationWarning: 'Ви зараз увійшли як інший користувач. Всі дії будуть виконані від їх імені.',
+      confirmImpersonate: 'Ви впевнені, що хочете увійти як цей користувач? Ви зможете бачити та виконувати дії від їх імені.',
+      impersonationStarted: 'Імперсонацію успішно розпочато',
+      impersonationStopped: 'Імперсонацію успішно зупинено',
+      impersonationFailed: 'Не вдалося розпочати імперсонацію',
+      stopImpersonationFailed: 'Не вдалося зупинити імперсонацію'
+    },
     profile: {
       contactInformation: 'Контактна інформація',
       employmentDetails: 'Деталі працевлаштування',
@@ -518,7 +549,16 @@ const messages = {
       equipmentInventory: 'Інвентар обладнання',
       equipmentInventoryDesc: 'Відстежуйте обладнання та призначення',
       leaveManagement: 'Керування відпустками',
-      leaveManagementDesc: 'Керуйте відпустками та лікарняними'
+      leaveManagementDesc: 'Керуйте відпустками та лікарняними',
+      myPendingLeaves: 'Мої очікувані відпустки',
+      myApprovedLeaves: 'Мої затверджені відпустки',
+      myEquipment: 'Моє обладнання',
+      myTeam: 'Моя команда',
+      quickActions: 'Швидкі дії',
+      myLeaves: 'Мої запити на відпустку',
+      myLeavesDesc: 'Переглядайте та керуйте своїми запитами на відпустку',
+      myProfile: 'Мій профіль',
+      myProfileDesc: 'Переглядайте та оновлюйте інформацію профілю'
     }
   }
 }

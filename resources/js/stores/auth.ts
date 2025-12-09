@@ -15,11 +15,19 @@ export interface User {
   }
 }
 
+export interface OriginalUser {
+  id: number
+  email: string
+  role: 'Admin' | 'Employee'
+}
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const token = ref<string | null>(localStorage.getItem('token'))
   const loading = ref(false)
   const error = ref<string | null>(null)
+  const isImpersonating = ref(false)
+  const originalUser = ref<OriginalUser | null>(null)
 
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => user.value?.role === 'Admin')
@@ -34,8 +42,12 @@ export const useAuthStore = defineStore('auth', () => {
       if (response.data.success) {
         token.value = response.data.data.token
         user.value = response.data.data.user
+        isImpersonating.value = response.data.data.isImpersonating || false
+        originalUser.value = response.data.data.originalUser || null
         
-        localStorage.setItem('token', token.value)
+        if (token.value) {
+          localStorage.setItem('token', token.value)
+        }
         
         return true
       }
@@ -60,6 +72,8 @@ export const useAuthStore = defineStore('auth', () => {
       // Always clear local state
       token.value = null
       user.value = null
+      isImpersonating.value = false
+      originalUser.value = null
       localStorage.removeItem('token')
     }
   }
@@ -72,10 +86,66 @@ export const useAuthStore = defineStore('auth', () => {
       
       if (response.data.success) {
         user.value = response.data.data
+        isImpersonating.value = response.data.data.isImpersonating || false
+        originalUser.value = response.data.data.originalUser || null
       }
     } catch (err) {
       // Token invalid, logout
       await logout()
+    }
+  }
+
+  async function impersonate(employeeId: string) {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await api.post(`/auth/impersonate/${employeeId}`)
+      
+      if (response.data.success) {
+        token.value = response.data.data.token
+        user.value = response.data.data.user
+        isImpersonating.value = response.data.data.isImpersonating || false
+        originalUser.value = response.data.data.originalUser || null
+        
+        if (token.value) {
+          localStorage.setItem('token', token.value)
+        }
+        
+        return true
+      }
+    } catch (err: any) {
+      error.value = err.response?.data?.error?.message || 'Impersonation failed'
+      return false
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function stopImpersonating() {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await api.post('/auth/stop-impersonating')
+      
+      if (response.data.success) {
+        token.value = response.data.data.token
+        user.value = response.data.data.user
+        isImpersonating.value = false
+        originalUser.value = null
+        
+        if (token.value) {
+          localStorage.setItem('token', token.value)
+        }
+        
+        return true
+      }
+    } catch (err: any) {
+      error.value = err.response?.data?.error?.message || 'Stop impersonation failed'
+      return false
+    } finally {
+      loading.value = false
     }
   }
 
@@ -85,7 +155,9 @@ export const useAuthStore = defineStore('auth', () => {
       
       if (response.data.success) {
         token.value = response.data.data.token
-        localStorage.setItem('token', token.value)
+        if (token.value) {
+          localStorage.setItem('token', token.value)
+        }
       }
     } catch (err) {
       await logout()
@@ -99,10 +171,14 @@ export const useAuthStore = defineStore('auth', () => {
     error,
     isAuthenticated,
     isAdmin,
+    isImpersonating,
+    originalUser,
     login,
     logout,
     fetchUser,
     refreshToken,
+    impersonate,
+    stopImpersonating,
   }
 })
 

@@ -333,6 +333,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useEmployeeStore } from '@/stores/employee'
 import { useAuthStore } from '@/stores/auth'
@@ -344,7 +345,13 @@ import { api } from '@/services/api'
 
 const employeeStore = useEmployeeStore()
 const authStore = useAuthStore()
+const router = useRouter()
 const { t } = useI18n()
+
+// Redirect non-admin users
+if (!authStore.isAdmin) {
+  router.push({ name: 'dashboard' })
+}
 
 const searchQuery = ref('')
 const statusFilter = ref('')

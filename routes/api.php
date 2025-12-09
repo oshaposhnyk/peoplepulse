@@ -26,6 +26,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::post('/auth/refresh', [AuthController::class, 'refresh'])->name('api.refresh');
     Route::get('/auth/me', [AuthController::class, 'me'])->name('api.me');
+    Route::post('/auth/impersonate/{employeeId}', [AuthController::class, 'impersonate'])->name('api.auth.impersonate');
+    Route::post('/auth/stop-impersonating', [AuthController::class, 'stopImpersonating'])->name('api.auth.stopImpersonating');
     
     // Dashboard
     Route::get('/dashboard/stats', [\App\Http\Controllers\Api\DashboardController::class, 'stats'])

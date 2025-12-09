@@ -1,5 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-100">
+    <!-- Impersonation Banner -->
+    <ImpersonationBanner />
+    
     <!-- Navigation -->
     <nav class="bg-white shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,6 +24,7 @@
                 {{ $t('nav.dashboard') }}
               </router-link>
               <router-link
+                v-if="authStore.isAdmin"
                 to="/employees"
                 class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 :class="$route.path.startsWith('/employees') 
@@ -30,6 +34,7 @@
                 {{ $t('nav.employees') }}
               </router-link>
               <router-link
+                v-if="authStore.isAdmin"
                 to="/teams"
                 class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 :class="$route.path.startsWith('/teams') 
@@ -39,6 +44,7 @@
                 {{ $t('nav.teams') }}
               </router-link>
               <router-link
+                v-if="authStore.isAdmin"
                 to="/equipment"
                 class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 :class="$route.path.startsWith('/equipment') 
@@ -74,8 +80,8 @@
               to="/profile"
               class="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
             >
-              <Avatar :name="authStore.user?.employee?.name || authStore.user?.email || 'User'" size="sm" />
-              <span>{{ authStore.user?.employee?.name || authStore.user?.email }}</span>
+              <Avatar :name="authStore.user?.employee?.name || authStore.user?.employee?.email || authStore.user?.email || 'User'" size="sm" />
+              <span>{{ authStore.user?.employee?.name || authStore.user?.employee?.email || authStore.user?.email }}</span>
             </router-link>
             
             <span
@@ -107,6 +113,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import Avatar from '@/components/Avatar.vue'
+import ImpersonationBanner from '@/components/ImpersonationBanner.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()

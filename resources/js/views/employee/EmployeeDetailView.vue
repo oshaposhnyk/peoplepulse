@@ -102,6 +102,13 @@
             >
               {{ $t('employee.reinstate') }}
             </button>
+            <button 
+              v-if="employee.status === 'Active'"
+              @click="loginAsEmployee"
+              class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 text-sm"
+            >
+              {{ $t('impersonation.loginAs') }}
+            </button>
           </div>
         </div>
 
@@ -365,6 +372,11 @@ const employeeStore = useEmployeeStore()
 const authStore = useAuthStore()
 const { t } = useI18n()
 
+// Redirect non-admin users
+if (!authStore.isAdmin) {
+  router.push({ name: 'dashboard' })
+}
+
 const employee = computed(() => employeeStore.currentEmployee)
 
 // Position Change Modal
@@ -481,6 +493,37 @@ async function reinstateEmployee() {
     showToast({ message: error.response?.data?.message || t('employee.reinstateFailed'), type: 'error' })
   } finally {
     reinstateSubmitting.value = false
+  }
+}
+
+async function loginAsEmployee() {
+  if (!confirm(t('impersonation.confirmImpersonate'))) {
+    return
+  }
+  
+  try {
+    const employeeId = route.params.id as string
+    const success = await authStore.impersonate(employeeId)
+    
+    if (success) {
+      showToast({ 
+        message: t('impersonation.impersonationStarted'), 
+        type: 'success' 
+      })
+      // Redirect to dashboard after impersonation
+      router.push('/dashboard')
+    } else {
+      showToast({ 
+        message: authStore.error || t('impersonation.impersonationFailed'), 
+        type: 'error' 
+      })
+    }
+  } catch (error: any) {
+    console.error('Failed to impersonate employee:', error)
+    showToast({ 
+      message: error.response?.data?.error?.message || t('impersonation.impersonationFailed'), 
+      type: 'error' 
+    })
   }
 }
 

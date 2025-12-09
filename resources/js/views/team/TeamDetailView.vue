@@ -71,18 +71,30 @@
               <div v-else-if="members.length > 0" class="divide-y divide-gray-200">
                 <div 
                   v-for="member in members" 
-                  :key="member.id"
+                  :key="member.employeeId"
                   class="px-4 py-4 sm:px-6 hover:bg-gray-50"
                 >
                   <div class="flex justify-between items-center">
-                    <div>
-                      <p class="font-medium text-gray-900">{{ member.employeeName }}</p>
-                      <p class="text-sm text-gray-500">{{ member.role }} • {{ member.allocationPercentage }}% {{ $t('team.allocated') }}</p>
-                    </div>
+                    <router-link
+                      :to="`/profile/${member.employeeId}`"
+                      class="flex items-center gap-3 flex-1 hover:opacity-80 transition-opacity"
+                    >
+                      <Avatar 
+                        :name="member.fullName || member.firstName + ' ' + member.lastName" 
+                        :photo-url="member.photoUrl"
+                        size="sm" 
+                      />
+                      <div>
+                        <p class="font-medium text-gray-900">{{ member.fullName || member.firstName + ' ' + member.lastName }}</p>
+                        <p class="text-sm text-gray-500">
+                          {{ member.position }} • {{ member.role }} • {{ member.allocationPercentage }}% {{ $t('team.allocated') }}
+                        </p>
+                      </div>
+                    </router-link>
                     <button
                       v-if="authStore.isAdmin"
-                      @click="removeMember(member.id)"
-                      class="text-red-600 hover:text-red-900 text-sm"
+                      @click="removeMember(member.employeeId)"
+                      class="text-red-600 hover:text-red-900 text-sm ml-4"
                     >
                       {{ $t('team.removeMember') }}
                     </button>
@@ -173,17 +185,24 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { api } from '@/services/api'
 import { useAuthStore } from '@/stores/auth'
 import { showToast } from '@/utils/toast'
 import AppLayout from '@/layouts/AppLayout.vue'
 import Modal from '@/components/Modal.vue'
+import Avatar from '@/components/Avatar.vue'
 
 const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 const { t } = useI18n()
+
+// Redirect non-admin users
+if (!authStore.isAdmin) {
+  router.push({ name: 'dashboard' })
+}
 
 const team = ref<any>(null)
 const loading = ref(false)

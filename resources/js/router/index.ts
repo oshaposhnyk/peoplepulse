@@ -25,31 +25,31 @@ const router = createRouter({
       path: '/employees',
       name: 'employees',
       component: () => import('@/views/employee/EmployeeListView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/employees/:id',
       name: 'employee-detail',
       component: () => import('@/views/employee/EmployeeDetailView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/teams',
       name: 'teams',
       component: () => import('@/views/team/TeamListView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/teams/:id',
       name: 'team-detail',
       component: () => import('@/views/team/TeamDetailView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/equipment',
       name: 'equipment',
       component: () => import('@/views/equipment/EquipmentListView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/leaves',
@@ -67,7 +67,7 @@ const router = createRouter({
       path: '/profile/:id',
       name: 'profile-view',
       component: () => import('@/views/ProfileView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
   ],
 })
@@ -76,13 +76,26 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
 
+  // Check authentication
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: 'login' })
-  } else if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    next({ name: 'dashboard' })
-  } else {
-    next()
+    return
   }
+
+  // Check admin access
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    // Redirect non-admin users to dashboard if they try to access admin-only pages
+    next({ name: 'dashboard' })
+    return
+  }
+
+  // Redirect authenticated users away from guest-only pages
+  if (to.meta.requiresGuest && authStore.isAuthenticated) {
+    next({ name: 'dashboard' })
+    return
+  }
+
+  next()
 })
 
 export default router

@@ -113,6 +113,15 @@ class TeamRepository extends BaseRepository implements TeamRepositoryInterface
     }
 
     /**
+     * Override findById to search by team_id (string) instead of id (integer)
+     */
+    public function findById(string $id): ?AggregateRoot
+    {
+        $model = TeamModel::where('team_id', $id)->first();
+        return $model ? $this->toDomain($model) : null;
+    }
+
+    /**
      * Save team and sync members
      */
     public function save($aggregate): void

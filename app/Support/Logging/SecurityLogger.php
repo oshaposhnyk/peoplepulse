@@ -86,5 +86,41 @@ class SecurityLogger
             'severity' => 'warning',
         ]);
     }
+
+    /**
+     * Log impersonation started
+     */
+    public static function impersonationStarted(
+        string|int $adminId,
+        string $adminEmail,
+        string|int $targetUserId,
+        string $targetUserEmail,
+        string $employeeId
+    ): void {
+        self::log('auth.impersonation.started', (string) $adminId, [
+            'admin_email' => $adminEmail,
+            'target_user_id' => (string) $targetUserId,
+            'target_user_email' => $targetUserEmail,
+            'employee_id' => $employeeId,
+            'severity' => 'info',
+        ]);
+    }
+
+    /**
+     * Log impersonation stopped
+     */
+    public static function impersonationStopped(
+        string|int $adminId,
+        string $adminEmail,
+        string|int $targetUserId,
+        string $targetUserEmail
+    ): void {
+        self::log('auth.impersonation.stopped', (string) $adminId, [
+            'admin_email' => $adminEmail,
+            'target_user_id' => (string) $targetUserId,
+            'target_user_email' => $targetUserEmail,
+            'severity' => 'info',
+        ]);
+    }
 }
 

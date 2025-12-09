@@ -464,6 +464,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { api } from '@/services/api'
 import { useAuthStore } from '@/stores/auth'
@@ -472,7 +473,13 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import Modal from '@/components/Modal.vue'
 
 const authStore = useAuthStore()
+const router = useRouter()
 const { t } = useI18n()
+
+// Redirect non-admin users
+if (!authStore.isAdmin) {
+  router.push({ name: 'dashboard' })
+}
 const equipment = ref<any[]>([])
 const loading = ref(false)
 const statusFilter = ref('')

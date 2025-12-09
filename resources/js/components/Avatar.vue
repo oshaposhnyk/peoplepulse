@@ -1,5 +1,6 @@
 <template>
   <div 
+    v-if="!photoUrl"
     :class="[
       'flex items-center justify-center font-semibold text-white rounded-full',
       sizeClasses[size]
@@ -8,6 +9,15 @@
   >
     {{ initials }}
   </div>
+  <img
+    v-else
+    :src="photoUrl"
+    :alt="name"
+    :class="[
+      'rounded-full object-cover',
+      sizeClasses[size]
+    ]"
+  />
 </template>
 
 <script setup lang="ts">
@@ -16,6 +26,7 @@ import { computed } from 'vue'
 const props = defineProps<{
   name: string
   size?: 'sm' | 'md' | 'lg' | 'xl'
+  photoUrl?: string
 }>()
 
 const size = props.size || 'md'

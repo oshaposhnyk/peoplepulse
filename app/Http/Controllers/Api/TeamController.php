@@ -185,6 +185,8 @@ class TeamController extends Controller
                     'lastName' => $employee->last_name,
                     'fullName' => $employee->full_name,
                     'position' => $employee->position,
+                    'email' => $employee->email,
+                    'photoUrl' => $employee->photo_url,
                     'role' => $employee->pivot->role,
                     'allocationPercentage' => $employee->pivot->allocation_percentage,
                     'assignedAt' => $employee->pivot->assigned_at,

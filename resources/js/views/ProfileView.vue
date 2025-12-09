@@ -39,13 +39,22 @@
                   </div>
                 </div>
 
-                <button
-                  v-if="isOwnProfile"
-                  @click="showEditModal = true"
-                  class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-                >
-                  {{ $t('common.edit') }}
-                </button>
+                <div class="flex gap-2">
+                  <button
+                    v-if="isOwnProfile"
+                    @click="showEditModal = true"
+                    class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                  >
+                    {{ $t('common.edit') }}
+                  </button>
+                  <button
+                    v-if="!isOwnProfile && authStore.isAdmin && profile.status === 'Active'"
+                    @click="loginAsEmployee"
+                    class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                  >
+                    {{ $t('impersonation.loginAs') }}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -183,7 +192,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { showToast } from '@/utils/toast'
@@ -193,6 +202,7 @@ import Modal from '@/components/Modal.vue'
 import { api } from '@/services/api'
 
 const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 const { t } = useI18n()
 const profile = ref<any>(null)
@@ -253,6 +263,38 @@ async function updateProfile() {
     showToast({ message: err.response?.data?.message || t('profile.updateFailed'), type: 'error' })
   } finally {
     updating.value = false
+  }
+}
+
+async function loginAsEmployee() {
+  if (!employeeId) return
+  
+  if (!confirm(t('impersonation.confirmImpersonate'))) {
+    return
+  }
+  
+  try {
+    const success = await authStore.impersonate(employeeId)
+    
+    if (success) {
+      showToast({ 
+        message: t('impersonation.impersonationStarted'), 
+        type: 'success' 
+      })
+      // Redirect to dashboard after impersonation
+      router.push('/dashboard')
+    } else {
+      showToast({ 
+        message: authStore.error || t('impersonation.impersonationFailed'), 
+        type: 'error' 
+      })
+    }
+  } catch (err: any) {
+    console.error('Failed to impersonate employee:', err)
+    showToast({ 
+      message: err.response?.data?.error?.message || t('impersonation.impersonationFailed'), 
+      type: 'error' 
+    })
   }
 }
 
