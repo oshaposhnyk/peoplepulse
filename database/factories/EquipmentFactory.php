@@ -14,8 +14,9 @@ class EquipmentFactory extends Factory
 
     public function definition(): array
     {
+        static $sequence = 0;
         $year = date('Y');
-        $sequence = Equipment::where('asset_tag', 'like', "ASSET-{$year}-%")->count() + 1;
+        $sequence++;
         
         $type = fake()->randomElement([
             'Laptop',

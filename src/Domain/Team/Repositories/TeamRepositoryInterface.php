@@ -19,14 +19,11 @@ interface TeamRepositoryInterface extends Repository
     public function nextIdentity(): string;
 
     /**
-     * Save team aggregate
-     */
-    public function save(Team $team): void;
-
-    /**
      * Find team by ID
+     * 
+     * @return Team|null
      */
-    public function findById(string $id): ?Team;
+    public function findById(string $id): mixed;
 
     /**
      * Find all active teams
@@ -49,9 +46,5 @@ interface TeamRepositoryInterface extends Repository
      */
     public function findByParent(TeamId $parentId): array;
 
-    /**
-     * Delete team
-     */
-    public function delete(Team $team): void;
 }
 

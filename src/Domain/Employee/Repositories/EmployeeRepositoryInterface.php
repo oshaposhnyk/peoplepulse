@@ -20,14 +20,11 @@ interface EmployeeRepositoryInterface extends Repository
     public function nextIdentity(): string;
 
     /**
-     * Save employee aggregate
-     */
-    public function save(Employee $employee): void;
-
-    /**
      * Find employee by ID
+     * 
+     * @return Employee|null
      */
-    public function findById(string $id): ?Employee;
+    public function findById(string $id): mixed;
 
     /**
      * Find employee by email
@@ -60,9 +57,5 @@ interface EmployeeRepositoryInterface extends Repository
      */
     public function emailExists(Email $email): bool;
 
-    /**
-     * Delete employee
-     */
-    public function delete(Employee $employee): void;
 }
 

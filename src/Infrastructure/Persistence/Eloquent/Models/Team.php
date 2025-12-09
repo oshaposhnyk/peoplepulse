@@ -7,11 +7,17 @@ namespace Infrastructure\Persistence\Eloquent\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Traits\LogsActivity as LogsActivityTrait;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Team extends Model
 {
-    use HasFactory, SoftDeletes, LogsActivityTrait;
+    use HasFactory, SoftDeletes, LogsActivity;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\TeamFactory::new();
+    }
 
     protected $fillable = [
         'team_id',
@@ -34,8 +40,12 @@ class Team extends Model
         'max_size' => 'integer',
     ];
 
-    protected static $logAttributes = ['*'];
-    protected static $logOnlyDirty = true;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty();
+    }
 
     /**
      * Parent team relationship

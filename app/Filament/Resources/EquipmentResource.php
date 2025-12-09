@@ -25,7 +25,57 @@ class EquipmentResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('asset_tag')
+                    ->label('Asset Tag')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(50),
+                Forms\Components\Select::make('equipment_type')
+                    ->label('Type')
+                    ->options([
+                        'Laptop' => 'Laptop',
+                        'Desktop' => 'Desktop',
+                        'Monitor' => 'Monitor',
+                        'Phone' => 'Phone',
+                        'Keyboard' => 'Keyboard',
+                        'Mouse' => 'Mouse',
+                        'Other' => 'Other',
+                    ])
+                    ->required(),
+                Forms\Components\TextInput::make('brand')
+                    ->required()
+                    ->maxLength(100),
+                Forms\Components\TextInput::make('model')
+                    ->required()
+                    ->maxLength(100),
+                Forms\Components\TextInput::make('serial_number')
+                    ->maxLength(100)
+                    ->unique(ignoreRecord: true),
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'Available' => 'Available',
+                        'Assigned' => 'Assigned',
+                        'InMaintenance' => 'In Maintenance',
+                        'Decommissioned' => 'Decommissioned',
+                    ])
+                    ->required()
+                    ->default('Available'),
+                Forms\Components\Select::make('condition')
+                    ->options([
+                        'New' => 'New',
+                        'Good' => 'Good',
+                        'Fair' => 'Fair',
+                        'Poor' => 'Poor',
+                    ])
+                    ->required()
+                    ->default('Good'),
+                Forms\Components\DatePicker::make('purchase_date'),
+                Forms\Components\TextInput::make('purchase_cost')
+                    ->numeric()
+                    ->prefix('$'),
+                Forms\Components\Textarea::make('notes')
+                    ->maxLength(500)
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -33,12 +83,56 @@ class EquipmentResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('asset_tag')
+                    ->label('Asset Tag')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('equipment_type')
+                    ->label('Type')
+                    ->badge()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('brand')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('model')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Available' => 'success',
+                        'Assigned' => 'info',
+                        'InMaintenance' => 'warning',
+                        'Decommissioned' => 'danger',
+                    }),
+                Tables\Columns\TextColumn::make('currentAssignee.full_name')
+                    ->label('Assigned To')
+                    ->default('-'),
+                Tables\Columns\TextColumn::make('purchase_date')
+                    ->date()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'Available' => 'Available',
+                        'Assigned' => 'Assigned',
+                        'InMaintenance' => 'In Maintenance',
+                        'Decommissioned' => 'Decommissioned',
+                    ]),
+                Tables\Filters\SelectFilter::make('equipment_type')
+                    ->label('Type')
+                    ->options([
+                        'Laptop' => 'Laptop',
+                        'Desktop' => 'Desktop',
+                        'Monitor' => 'Monitor',
+                        'Phone' => 'Phone',
+                        'Keyboard' => 'Keyboard',
+                        'Mouse' => 'Mouse',
+                        'Other' => 'Other',
+                    ]),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

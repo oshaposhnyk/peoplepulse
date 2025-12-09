@@ -52,10 +52,10 @@ class EmployeeController extends Controller
             'success' => true,
             'data' => EmployeeResource::collection($employees->items()),
             'meta' => [
-                'currentPage' => $employees->currentPage(),
-                'perPage' => $employees->perPage(),
+                'current_page' => $employees->currentPage(),
+                'per_page' => $employees->perPage(),
                 'total' => $employees->total(),
-                'lastPage' => $employees->lastPage(),
+                'last_page' => $employees->lastPage(),
             ],
         ]);
     }

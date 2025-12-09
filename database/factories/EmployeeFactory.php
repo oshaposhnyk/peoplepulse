@@ -13,8 +13,9 @@ class EmployeeFactory extends Factory
 
     public function definition(): array
     {
+        static $sequence = 0;
         $year = date('Y');
-        $sequence = Employee::where('employee_id', 'like', "EMP-{$year}-%")->count() + 1;
+        $sequence++;
         
         return [
             'employee_id' => sprintf('EMP-%04d-%04d', $year, $sequence),

@@ -14,11 +14,13 @@ class LeaveRequestFactory extends Factory
 
     public function definition(): array
     {
+        static $sequence = 0;
         $year = date('Y');
-        $sequence = LeaveRequest::where('leave_id', 'like', "LEAVE-{$year}-%")->count() + 1;
+        $sequence++;
         
         $startDate = fake()->dateTimeBetween('now', '+3 months');
-        $endDate = fake()->dateTimeBetween($startDate, '+2 weeks');
+        $daysToAdd = fake()->numberBetween(1, 14);
+        $endDate = (clone $startDate)->modify("+{$daysToAdd} days");
         $totalDays = $startDate->diff($endDate)->days + 1;
 
         return [

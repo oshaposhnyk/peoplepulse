@@ -6,11 +6,17 @@ namespace Infrastructure\Persistence\Eloquent\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity as LogsActivityTrait;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class LeaveRequest extends Model
 {
-    use HasFactory, LogsActivityTrait;
+    use HasFactory, LogsActivity;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\LeaveRequestFactory::new();
+    }
 
     protected $table = 'leave_requests';
 
@@ -48,8 +54,12 @@ class LeaveRequest extends Model
         'requested_at' => 'datetime',
     ];
 
-    protected static $logAttributes = ['*'];
-    protected static $logOnlyDirty = true;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty();
+    }
 
     public function employee()
     {

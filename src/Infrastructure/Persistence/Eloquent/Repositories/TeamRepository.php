@@ -35,7 +35,7 @@ class TeamRepository extends BaseRepository implements TeamRepositoryInterface
         return TeamId::generate($sequence)->value();
     }
 
-    protected function toDomain($model): AggregateRoot
+    protected function toDomain($model): mixed
     {
         /** @var TeamModel $model */
         
@@ -60,7 +60,7 @@ class TeamRepository extends BaseRepository implements TeamRepositoryInterface
         );
     }
 
-    protected function toModel($aggregate): Model
+    protected function toModel($aggregate): mixed
     {
         /** @var TeamAggregate $aggregate */
         

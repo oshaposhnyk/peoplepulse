@@ -8,11 +8,15 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Traits\LogsActivity as LogsActivityTrait;
 
 class Equipment extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes, LogsActivityTrait;
+    use HasFactory, HasUuids, SoftDeletes;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\EquipmentFactory::new();
+    }
 
     protected $table = 'equipment';
 
@@ -49,9 +53,6 @@ class Equipment extends Model
         'assigned_at' => 'datetime',
         'decommissioned_at' => 'datetime',
     ];
-
-    protected static $logAttributes = ['*'];
-    protected static $logOnlyDirty = true;
 
     /**
      * Current assignee relationship

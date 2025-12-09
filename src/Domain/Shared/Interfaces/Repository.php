@@ -19,16 +19,16 @@ interface Repository
     /**
      * Save aggregate
      */
-    public function save(AggregateRoot $aggregate): void;
+    public function save(mixed $aggregate): void;
     
     /**
      * Find aggregate by ID
      */
-    public function findById(string $id): ?AggregateRoot;
+    public function findById(string $id): mixed;
     
     /**
      * Delete aggregate
      */
-    public function delete(AggregateRoot $aggregate): void;
+    public function delete(mixed $aggregate): void;
 }
 

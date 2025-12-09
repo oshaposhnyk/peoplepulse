@@ -45,7 +45,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
         return EmployeeId::generate((int) $year, $sequence)->value();
     }
 
-    protected function toDomain(Model $model): AggregateRoot
+    protected function toDomain($model): AggregateRoot
     {
         /** @var EmployeeModel $model */
         
@@ -72,7 +72,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
             EmployeeId::fromString($model->employee_id),
             $personalInfo,
             Position::fromString($model->position),
-            Salary::fromMoney(Money::fromAmount($model->salary_amount, $model->salary_currency)),
+            Salary::fromMoney(Money::fromAmount((float)$model->salary_amount, $model->salary_currency)),
             WorkLocation::fromString($model->office_location),
             new DateTimeImmutable($model->hire_date->format('Y-m-d')),
             match($model->employment_status) {
@@ -85,7 +85,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
         );
     }
 
-    protected function toModel(AggregateRoot $aggregate): Model
+    protected function toModel($aggregate): Model
     {
         /** @var EmployeeAggregate $aggregate */
         

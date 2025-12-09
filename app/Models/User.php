@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'locale',
     ];
 
     /**
@@ -53,6 +54,22 @@ class User extends Authenticatable
             'mfa_enabled' => 'boolean',
             'mfa_backup_codes' => 'array',
         ];
+    }
+
+    /**
+     * Get user's name for Filament
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * Get employee ID string (EMP-XXXX-XXXX format)
+     */
+    public function getEmployeeIdStringAttribute(): ?string
+    {
+        return $this->employee?->employee_id;
     }
 
     /**
@@ -97,6 +114,6 @@ class User extends Authenticatable
      */
     public function employee()
     {
-        return $this->belongsTo(\App\Models\Employee::class, 'employee_id');
+        return $this->belongsTo(\Infrastructure\Persistence\Eloquent\Models\Employee::class, 'employee_id');
     }
 }

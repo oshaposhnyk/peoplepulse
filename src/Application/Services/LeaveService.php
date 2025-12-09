@@ -117,8 +117,9 @@ class LeaveService extends BaseService
             ]);
 
             // Deduct from balance
-            $balance = $this->getBalance($model->employee_id, $model->leave_type, date('Y', strtotime($model->start_date)));
-            $balance->deduct($model->total_days);
+            $year = $model->start_date instanceof \Carbon\Carbon ? $model->start_date->year : date('Y', strtotime($model->start_date));
+            $balance = $this->getBalance($model->employee_id, $model->leave_type, $year);
+            $balance->deduct((float)$model->total_days);
             $balance->save();
 
             AuditLogger::leave('approved', $leaveId, [

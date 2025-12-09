@@ -39,7 +39,7 @@ class LeaveRepository extends BaseRepository implements LeaveRepositoryInterface
         return LeaveId::generate((int) $year, $sequence)->value();
     }
 
-    protected function toDomain($model): AggregateRoot
+    protected function toDomain($model): mixed
     {
         /** @var LeaveRequestModel $model */
         
@@ -65,7 +65,7 @@ class LeaveRepository extends BaseRepository implements LeaveRepositoryInterface
         );
     }
 
-    protected function toModel($aggregate): Model
+    protected function toModel($aggregate): mixed
     {
         /** @var LeaveRequestAggregate $aggregate */
         

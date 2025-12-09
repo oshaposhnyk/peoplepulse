@@ -31,7 +31,7 @@ class EquipmentRepository extends BaseRepository implements EquipmentRepositoryI
         return EquipmentId::generate()->value();
     }
 
-    protected function toDomain($model): AggregateRoot
+    protected function toDomain($model): mixed
     {
         /** @var EquipmentModel $model */
         
@@ -65,7 +65,7 @@ class EquipmentRepository extends BaseRepository implements EquipmentRepositoryI
         );
     }
 
-    protected function toModel($aggregate): Model
+    protected function toModel($aggregate): mixed
     {
         /** @var EquipmentAggregate $aggregate */
         

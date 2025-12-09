@@ -16,7 +16,7 @@ class SecurityLogger
      */
     public static function log(
         string $eventType,
-        ?string $userId = null,
+        string|int|null $userId = null,
         ?array $context = []
     ): void {
         Log::channel('security')->info($eventType, array_merge($context, [
@@ -30,9 +30,9 @@ class SecurityLogger
     /**
      * Log successful login
      */
-    public static function loginSuccess(string $userId, string $email): void
+    public static function loginSuccess(string|int $userId, string $email): void
     {
-        self::log('auth.login.success', $userId, [
+        self::log('auth.login.success', (string) $userId, [
             'email' => $email,
         ]);
     }
@@ -51,17 +51,17 @@ class SecurityLogger
     /**
      * Log logout
      */
-    public static function logout(string $userId): void
+    public static function logout(string|int $userId): void
     {
-        self::log('auth.logout', $userId);
+        self::log('auth.logout', (string) $userId);
     }
 
     /**
      * Log account locked
      */
-    public static function accountLocked(string $userId, string $email): void
+    public static function accountLocked(string|int $userId, string $email): void
     {
-        self::log('auth.account_locked', $userId, [
+        self::log('auth.account_locked', (string) $userId, [
             'email' => $email,
             'severity' => 'warning',
         ]);
@@ -70,9 +70,9 @@ class SecurityLogger
     /**
      * Log password change
      */
-    public static function passwordChanged(string $userId): void
+    public static function passwordChanged(string|int $userId): void
     {
-        self::log('auth.password_changed', $userId);
+        self::log('auth.password_changed', (string) $userId);
     }
 
     /**

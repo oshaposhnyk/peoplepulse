@@ -25,7 +25,26 @@ class TeamResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('team_id')
+                    ->label('Team ID')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(50),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(100),
+                Forms\Components\Textarea::make('description')
+                    ->maxLength(500)
+                    ->columnSpanFull(),
+                Forms\Components\Select::make('type')
+                    ->options([
+                        'Development' => 'Development',
+                        'QA' => 'QA',
+                        'DevOps' => 'DevOps',
+                        'Design' => 'Design',
+                        'Product' => 'Product',
+                    ])
+                    ->required(),
             ]);
     }
 
@@ -33,12 +52,36 @@ class TeamResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('team_id')
+                    ->label('Team ID')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('type')
+                    ->badge()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('members_count')
+                    ->label('Members')
+                    ->counts('members'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('type')
+                    ->options([
+                        'Development' => 'Development',
+                        'QA' => 'QA',
+                        'DevOps' => 'DevOps',
+                        'Design' => 'Design',
+                        'Product' => 'Product',
+                    ]),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

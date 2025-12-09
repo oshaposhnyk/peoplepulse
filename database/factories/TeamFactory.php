@@ -13,7 +13,8 @@ class TeamFactory extends Factory
 
     public function definition(): array
     {
-        $sequence = Team::count() + 1;
+        static $sequence = 0;
+        $sequence++;
         
         return [
             'team_id' => sprintf('TEAM-%04d', $sequence),

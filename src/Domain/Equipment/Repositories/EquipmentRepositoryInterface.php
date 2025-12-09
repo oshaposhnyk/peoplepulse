@@ -17,9 +17,10 @@ interface EquipmentRepositoryInterface extends Repository
 {
     public function nextIdentity(): string;
 
-    public function save(Equipment $equipment): void;
-
-    public function findById(string $id): ?Equipment;
+    /**
+     * @return Equipment|null
+     */
+    public function findById(string $id): mixed;
 
     public function findByAssetTag(AssetTag $assetTag): ?Equipment;
 
@@ -46,6 +47,5 @@ interface EquipmentRepositoryInterface extends Repository
      */
     public function findByEmployee(string $employeeId): array;
 
-    public function delete(Equipment $equipment): void;
 }
 

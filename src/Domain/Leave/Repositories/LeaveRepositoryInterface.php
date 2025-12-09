@@ -16,9 +16,10 @@ interface LeaveRepositoryInterface extends Repository
 {
     public function nextIdentity(): string;
 
-    public function save(LeaveRequest $leave): void;
-
-    public function findById(string $id): ?LeaveRequest;
+    /**
+     * @return LeaveRequest|null
+     */
+    public function findById(string $id): mixed;
 
     /**
      * Find leave requests by employee
@@ -53,6 +54,5 @@ interface LeaveRepositoryInterface extends Repository
         DateTimeImmutable $endDate
     ): bool;
 
-    public function delete(LeaveRequest $leave): void;
 }
 

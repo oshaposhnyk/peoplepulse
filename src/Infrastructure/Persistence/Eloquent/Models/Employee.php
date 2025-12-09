@@ -7,12 +7,17 @@ namespace Infrastructure\Persistence\Eloquent\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\LogsActivity;
-use Spatie\Activitylog\Traits\LogsActivity as LogsActivityTrait;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Employee extends Model
 {
-    use HasFactory, SoftDeletes, LogsActivityTrait;
+    use HasFactory, SoftDeletes, LogsActivity;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\EmployeeFactory::new();
+    }
 
     protected $fillable = [
         'employee_id',
@@ -63,8 +68,12 @@ class Employee extends Model
         'remote_work_policy' => 'array',
     ];
 
-    protected static $logAttributes = ['*'];
-    protected static $logOnlyDirty = true;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty();
+    }
 
     /**
      * Relationship to user account

@@ -72,7 +72,7 @@ class AuthController extends Controller
         // Generate token
         $token = $user->createToken('access-token')->plainTextToken;
 
-        SecurityLogger::loginSuccess($user->id, $user->email);
+        SecurityLogger::loginSuccess((string) $user->id, $user->email);
 
         return response()->json([
             'success' => true,
@@ -81,6 +81,8 @@ class AuthController extends Controller
                     'id' => $user->id,
                     'email' => $user->email,
                     'role' => $user->role,
+                    'employee_id' => $user->employee_id,
+                    'employee_id_string' => $user->employee_id_string,
                     'employee' => $user->employee,
                 ],
                 'token' => $token,
@@ -98,7 +100,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        SecurityLogger::logout($request->user()->id);
+        SecurityLogger::logout((string) $request->user()->id);
 
         return response()->json([
             'success' => true,
@@ -117,6 +119,8 @@ class AuthController extends Controller
                 'id' => $request->user()->id,
                 'email' => $request->user()->email,
                 'role' => $request->user()->role,
+                'employee_id' => $request->user()->employee_id,
+                'employee_id_string' => $request->user()->employee_id_string,
                 'employee' => $request->user()->employee,
             ],
         ]);
@@ -164,7 +168,7 @@ class AuthController extends Controller
                 'locked_until' => now()->addMinutes(30),
             ]);
 
-            SecurityLogger::accountLocked($user->id, $user->email);
+            SecurityLogger::accountLocked((string) $user->id, $user->email);
         }
     }
 }

@@ -27,6 +27,18 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('/auth/refresh', [AuthController::class, 'refresh'])->name('api.refresh');
     Route::get('/auth/me', [AuthController::class, 'me'])->name('api.me');
     
+    // Dashboard
+    Route::get('/dashboard/stats', [\App\Http\Controllers\Api\DashboardController::class, 'stats'])
+        ->name('api.dashboard.stats');
+    
+    // Profile endpoints
+    Route::get('/profile', [\App\Http\Controllers\Api\ProfileController::class, 'show'])
+        ->name('api.profile.show');
+    Route::put('/profile', [\App\Http\Controllers\Api\ProfileController::class, 'update'])
+        ->name('api.profile.update');
+    Route::get('/profile/{employeeId}', [\App\Http\Controllers\Api\ProfileController::class, 'viewProfile'])
+        ->name('api.profile.view');
+    
     // Employee endpoints
     Route::apiResource('employees', \App\Http\Controllers\Api\EmployeeController::class)
         ->parameters(['employees' => 'employeeId']);

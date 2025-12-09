@@ -22,19 +22,13 @@ abstract class BaseRepository implements Repository
 
     /**
      * Convert Eloquent model to domain aggregate
-     *
-     * @param Model $model
-     * @return AggregateRoot
      */
-    abstract protected function toDomain($model): AggregateRoot;
+    abstract protected function toDomain($model): mixed;
 
     /**
      * Convert domain aggregate to Eloquent model
-     *
-     * @param AggregateRoot $aggregate
-     * @return Model
      */
-    abstract protected function toModel($aggregate): Model;
+    abstract protected function toModel($aggregate): mixed;
 
     /**
      * Generate next identity
@@ -44,7 +38,7 @@ abstract class BaseRepository implements Repository
     /**
      * Save aggregate
      */
-    public function save(AggregateRoot $aggregate): void
+    public function save(mixed $aggregate): void
     {
         $model = $this->toModel($aggregate);
         $model->save();
@@ -56,7 +50,7 @@ abstract class BaseRepository implements Repository
     /**
      * Find aggregate by ID
      */
-    public function findById(string $id): ?AggregateRoot
+    public function findById(string $id): mixed
     {
         $modelClass = $this->model();
         $model = $modelClass::find($id);
@@ -67,7 +61,7 @@ abstract class BaseRepository implements Repository
     /**
      * Delete aggregate
      */
-    public function delete(AggregateRoot $aggregate): void
+    public function delete(mixed $aggregate): void
     {
         $model = $this->toModel($aggregate);
         $model->delete();
@@ -76,8 +70,12 @@ abstract class BaseRepository implements Repository
     /**
      * Dispatch domain events from aggregate
      */
-    protected function dispatchEvents(AggregateRoot $aggregate): void
+    protected function dispatchEvents(mixed $aggregate): void
     {
+        if (!$aggregate instanceof AggregateRoot) {
+            return;
+        }
+
         $events = $aggregate->releaseEvents();
 
         foreach ($events as $event) {

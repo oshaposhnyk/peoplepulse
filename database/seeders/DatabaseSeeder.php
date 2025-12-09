@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Infrastructure\Persistence\Eloquent\Models\Employee;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +13,47 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Create employees first
+        $this->call([
+            EmployeeSeeder::class,
+            TeamSeeder::class,
+            EquipmentSeeder::class,
+            LeaveSeeder::class,
         ]);
+
+        // Create admin user
+        $adminEmployee = Employee::where('position', 'Engineering Manager')->first()
+            ?? Employee::first();
+
+        if ($adminEmployee) {
+            User::create([
+                'employee_id' => $adminEmployee->id,
+                'email' => 'admin@peoplepulse.com',
+                'password' => bcrypt('password'),
+                'role' => 'Admin',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]);
+
+            $this->command->info('Admin user created: admin@peoplepulse.com / password');
+        }
+
+        // Create regular employee user
+        $regularEmployee = Employee::where('position', 'Developer')
+            ->where('id', '!=', $adminEmployee?->id)
+            ->first();
+
+        if ($regularEmployee) {
+            User::create([
+                'employee_id' => $regularEmployee->id,
+                'email' => 'employee@peoplepulse.com',
+                'password' => bcrypt('password'),
+                'role' => 'Employee',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]);
+
+            $this->command->info('Employee user created: employee@peoplepulse.com / password');
+        }
     }
 }
