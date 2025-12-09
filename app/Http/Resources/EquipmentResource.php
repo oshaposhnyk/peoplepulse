@@ -34,6 +34,8 @@ class EquipmentResource extends JsonResource
             'currentAssignee' => $this->when($this->currentAssignee, fn() => [
                 'id' => $this->currentAssignee->employee_id,
                 'name' => $this->currentAssignee->full_name,
+                'email' => $this->currentAssignee->email,
+                'photoUrl' => $this->currentAssignee->photo_url,
                 'position' => $this->currentAssignee->position,
             ]),
             

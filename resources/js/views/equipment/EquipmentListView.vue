@@ -41,6 +41,16 @@
                 <option value="Keyboard">{{ $t('equipment.keyboard') }}</option>
                 <option value="Mouse">{{ $t('equipment.mouse') }}</option>
               </select>
+              <select
+                v-model="employeeFilter"
+                class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                @change="fetchEquipment"
+              >
+                <option value="">{{ $t('equipment.allEmployees') }}</option>
+                <option v-for="employee in employees" :key="employee.id" :value="employee.id">
+                  {{ employee.fullName }}
+                </option>
+              </select>
             </div>
 
             <!-- Loading -->
@@ -80,9 +90,20 @@
                   <p class="text-gray-600">
                     <span class="font-medium">{{ $t('equipment.serialNumber') }}:</span> {{ item.serialNumber }}
                   </p>
-                  <p v-if="item.currentAssignee" class="text-gray-600">
-                    <span class="font-medium">{{ $t('equipment.assignedTo') }}:</span> {{ item.currentAssignee.name }}
-                  </p>
+                  <div v-if="item.currentAssignee" class="text-gray-600">
+                    <span class="font-medium">{{ $t('equipment.assignedTo') }}:</span>
+                    <router-link
+                      :to="`/profile/${item.currentAssignee.id}`"
+                      class="ml-2 inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-900"
+                    >
+                      <Avatar 
+                        :name="item.currentAssignee.name" 
+                        :photo-url="item.currentAssignee.photoUrl" 
+                        size="sm" 
+                      />
+                      <span>{{ item.currentAssignee.name }}</span>
+                    </router-link>
+                  </div>
                   <p class="text-gray-600">
                     <span class="font-medium">{{ $t('equipment.condition') }}:</span> {{ item.condition }}
                   </p>
@@ -471,6 +492,7 @@ import { useAuthStore } from '@/stores/auth'
 import { showToast } from '@/utils/toast'
 import AppLayout from '@/layouts/AppLayout.vue'
 import Modal from '@/components/Modal.vue'
+import Avatar from '@/components/Avatar.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -484,6 +506,8 @@ const equipment = ref<any[]>([])
 const loading = ref(false)
 const statusFilter = ref('')
 const typeFilter = ref('')
+const employeeFilter = ref('')
+const employees = ref<any[]>([])
 
 // Add Equipment Modal
 const showAddEquipmentModal = ref(false)
@@ -566,12 +590,26 @@ const completeMaintenanceForm = ref({
   warrantyWork: false
 })
 
+async function fetchEmployees() {
+  try {
+    const response = await api.get('/employees', { 
+      params: {
+        per_page: 1000
+      }
+    })
+    employees.value = response.data.data || []
+  } catch (error) {
+    console.error('Failed to fetch employees:', error)
+  }
+}
+
 async function fetchEquipment() {
   loading.value = true
   try {
     const params: any = {}
     if (statusFilter.value) params['filter[status]'] = statusFilter.value
     if (typeFilter.value) params['filter[equipment_type]'] = typeFilter.value
+    if (employeeFilter.value) params['filter[assignedTo]'] = employeeFilter.value
     
     const response = await api.get('/equipment', { params })
     equipment.value = response.data.data
@@ -713,6 +751,7 @@ async function completeMaintenance() {
 }
 
 onMounted(() => {
+  fetchEmployees()
   fetchEquipment()
 })
 </script>

@@ -47,8 +47,18 @@
                 </div>
 
                 <div v-if="team.teamLead" class="mt-3 pt-3 border-t border-gray-200">
-                  <p class="text-xs text-gray-500">{{ $t('team.teamLead') }}</p>
-                  <p class="text-sm font-medium text-gray-900">{{ team.teamLead.name }}</p>
+                  <p class="text-xs text-gray-500 mb-1">{{ $t('team.teamLead') }}</p>
+                  <router-link
+                    :to="`/profile/${team.teamLead.id}`"
+                    class="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-900"
+                  >
+                    <Avatar 
+                      :name="team.teamLead.name" 
+                      :photo-url="team.teamLead.photoUrl" 
+                      size="sm" 
+                    />
+                    <span>{{ team.teamLead.name }}</span>
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -145,6 +155,7 @@ import { useAuthStore } from '@/stores/auth'
 import { showToast } from '@/utils/toast'
 import AppLayout from '@/layouts/AppLayout.vue'
 import Modal from '@/components/Modal.vue'
+import Avatar from '@/components/Avatar.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()

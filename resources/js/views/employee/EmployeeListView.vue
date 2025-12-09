@@ -34,6 +34,26 @@
                 <option value="Terminated">{{ $t('employee.statusTerminated') }}</option>
                 <option value="OnLeave">{{ $t('employee.statusOnLeave') }}</option>
               </select>
+              <select
+                v-model="teamFilter"
+                class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                @change="handleTeamFilterChange"
+              >
+                <option value="">{{ $t('employee.allTeams') }}</option>
+                <option v-for="team in teams" :key="team.id" :value="team.id">
+                  {{ team.name }}
+                </option>
+              </select>
+              <select
+                v-model="departmentFilter"
+                class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                @change="handleDepartmentFilterChange"
+              >
+                <option value="">{{ $t('employee.allDepartments') }}</option>
+                <option v-for="dept in departments" :key="dept" :value="dept">
+                  {{ dept }}
+                </option>
+              </select>
             </div>
 
             <!-- Loading State -->
@@ -74,6 +94,9 @@
                       {{ $t('employee.department') }}
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {{ $t('employee.teams') }}
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {{ $t('employee.status') }}
                     </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -105,6 +128,19 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {{ employee.department }}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                      <div v-if="employee.teams && employee.teams.length > 0" class="flex flex-wrap gap-1">
+                        <span
+                          v-for="team in employee.teams"
+                          :key="team.id"
+                          class="inline-flex items-center px-2 py-1 rounded-md text-xs bg-indigo-50 text-indigo-700"
+                          :title="`${team.name} (${team.role}) - ${team.allocationPercentage}%`"
+                        >
+                          {{ team.name }} ({{ team.role }}) - {{ team.allocationPercentage }}%
+                        </span>
+                      </div>
+                      <span v-else class="text-gray-400">-</span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span
@@ -355,6 +391,10 @@ if (!authStore.isAdmin) {
 
 const searchQuery = ref('')
 const statusFilter = ref('')
+const teamFilter = ref('')
+const departmentFilter = ref('')
+const teams = ref<any[]>([])
+const departments = ref<string[]>([])
 
 // Pagination from store
 const totalPages = computed(() => employeeStore.pagination.totalPages)
@@ -401,6 +441,38 @@ function handleStatusFilterChange() {
   fetchEmployees(1)
 }
 
+function handleDepartmentFilterChange() {
+  fetchEmployees(1)
+}
+
+function handleTeamFilterChange() {
+  fetchEmployees(1)
+}
+
+async function fetchTeams() {
+  try {
+    const response = await api.get('/teams')
+    teams.value = response.data.data || []
+  } catch (error) {
+    console.error('Failed to fetch teams:', error)
+  }
+}
+
+async function fetchDepartments() {
+  try {
+    const response = await api.get('/employees', {
+      params: {
+        per_page: 1000
+      }
+    })
+    const employees = response.data.data || []
+    const uniqueDepartments = [...new Set(employees.map((emp: any) => emp.department).filter(Boolean))].sort()
+    departments.value = uniqueDepartments
+  } catch (error) {
+    console.error('Failed to fetch departments:', error)
+  }
+}
+
 async function fetchEmployees(page = 1) {
   const filters: any = {
     page: page,
@@ -413,6 +485,12 @@ async function fetchEmployees(page = 1) {
   
   if (statusFilter.value) {
     filters['filter[employment_status]'] = statusFilter.value
+  }
+  if (teamFilter.value) {
+    filters['filter[team]'] = teamFilter.value
+  }
+  if (departmentFilter.value) {
+    filters['filter[department]'] = departmentFilter.value
   }
   
   await employeeStore.fetchEmployees(filters)
@@ -474,6 +552,8 @@ async function addEmployee() {
 }
 
 onMounted(() => {
+  fetchTeams()
+  fetchDepartments()
   fetchEmployees(1)
 })
 </script>

@@ -16,7 +16,11 @@
             <div class="px-4 py-5 sm:p-6">
               <div class="flex items-center space-x-6">
                 <!-- Avatar -->
-                <Avatar :name="profile.fullName || authStore.user?.email || 'User'" size="xl" />
+                <Avatar 
+                  :name="profile.fullName || authStore.user?.employee?.name || authStore.user?.email || 'User'" 
+                  :photo-url="profile.photoUrl"
+                  size="xl" 
+                />
                 
                 <div class="flex-1">
                   <h2 class="text-2xl font-bold text-gray-900">{{ profile.fullName }}</h2>
@@ -140,6 +144,81 @@
               </div>
             </div>
           </div>
+
+          <!-- Equipment -->
+          <div v-if="(authStore.isAdmin || isOwnProfile) && (equipment.length > 0 || loadingEquipment)" class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+              <h3 class="text-lg leading-6 font-medium text-gray-900">
+                {{ $t('profile.myEquipment') }}
+              </h3>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+              <div v-if="loadingEquipment" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
+              </div>
+              <div v-else-if="equipment.length > 0" class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {{ $t('equipment.assetTag') }}
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {{ $t('equipment.type') }}
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {{ $t('equipment.brand') }} / {{ $t('equipment.model') }}
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {{ $t('equipment.status') }}
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {{ $t('equipment.condition') }}
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {{ $t('equipment.assignedAt') }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="item in equipment" :key="item.id" class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {{ item.assetTag }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ $t(`equipment.${item.type.toLowerCase()}`) || item.type }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ item.brand }} {{ item.model }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                          :class="{
+                            'bg-green-100 text-green-800': item.status === 'Available',
+                            'bg-blue-100 text-blue-800': item.status === 'Assigned',
+                            'bg-yellow-100 text-yellow-800': item.status === 'InMaintenance',
+                            'bg-gray-100 text-gray-800': item.status === 'Decommissioned',
+                          }"
+                          class="px-2 py-1 text-xs font-semibold rounded-full"
+                        >
+                          {{ $t(`equipment.status${item.status}`) || $t(`equipment.${item.status.toLowerCase()}`) || item.status }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ item.condition }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ item.assignedAt ? new Date(item.assignedAt).toLocaleDateString() : 'N/A' }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p v-else class="text-center py-8 text-gray-500 text-sm">
+                {{ $t('profile.noEquipment') }}
+              </p>
+            </div>
+          </div>
         </div>
 
         <!-- Error State -->
@@ -208,6 +287,8 @@ const { t } = useI18n()
 const profile = ref<any>(null)
 const loading = ref(false)
 const error = ref('')
+const equipment = ref<any[]>([])
+const loadingEquipment = ref(false)
 
 // Check if viewing own profile or someone else's
 const employeeId = route.params.id as string | undefined
@@ -243,11 +324,35 @@ async function fetchProfile() {
         location: profile.value.location || ''
       }
     }
+
+    // Fetch equipment if admin or own profile
+    if (authStore.isAdmin || isOwnProfile.value) {
+      await fetchEquipment()
+    }
   } catch (err: any) {
     console.error('Failed to fetch profile:', err)
     error.value = err.response?.data?.message || 'Failed to load profile'
   } finally {
     loading.value = false
+  }
+}
+
+async function fetchEquipment() {
+  loadingEquipment.value = true
+  try {
+    const targetEmployeeId = employeeId || authStore.user?.employee_id_string
+    if (!targetEmployeeId) {
+      equipment.value = []
+      return
+    }
+    
+    const response = await api.get(`/employees/${targetEmployeeId}/equipment`)
+    equipment.value = response.data.data || []
+  } catch (err: any) {
+    console.error('Failed to fetch equipment:', err)
+    equipment.value = []
+  } finally {
+    loadingEquipment.value = false
   }
 }
 

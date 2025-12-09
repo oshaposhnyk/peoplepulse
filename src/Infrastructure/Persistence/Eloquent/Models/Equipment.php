@@ -117,5 +117,19 @@ class Equipment extends Model
     {
         return $query->where('equipment_type', $type);
     }
+
+    /**
+     * Scope filter by assigned employee
+     */
+    public function scopeAssignedTo($query, string $employeeId)
+    {
+        $employee = Employee::where('employee_id', $employeeId)->first();
+        
+        if (!$employee) {
+            return $query->whereRaw('1 = 0'); // Return empty result
+        }
+        
+        return $query->where('current_assignee_id', $employee->id);
+    }
 }
 

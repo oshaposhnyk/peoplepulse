@@ -39,6 +39,7 @@ class EquipmentController extends Controller
                 AllowedFilter::exact('equipment_type'),
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('brand'),
+                AllowedFilter::scope('assignedTo'),
             ])
             ->allowedSorts(['asset_tag', 'purchase_date', 'equipment_type'])
             ->defaultSort('-purchase_date')

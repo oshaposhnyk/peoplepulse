@@ -129,6 +129,32 @@ class Employee extends Model
     }
 
     /**
+     * Scope filter by team
+     */
+    public function scopeTeam($query, string $teamId)
+    {
+        return $query->whereHas('teamMemberships', function ($q) use ($teamId) {
+            $q->where('teams.team_id', $teamId);
+        });
+    }
+
+    /**
+     * Team memberships relationship
+     */
+    public function teamMemberships()
+    {
+        return $this->belongsToMany(
+            Team::class,
+            'team_members',
+            'employee_id',
+            'team_id'
+        )
+        ->withPivot(['role', 'allocation_percentage', 'assigned_at', 'removed_at'])
+        ->whereNull('team_members.removed_at')
+        ->withTimestamps();
+    }
+
+    /**
      * Get full name attribute
      */
     public function getFullNameAttribute(): string

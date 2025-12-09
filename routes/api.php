@@ -58,6 +58,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
             ->name('api.employees.reinstate');
         Route::get('/history', [\App\Http\Controllers\Api\EmployeeController::class, 'history'])
             ->name('api.employees.history');
+        Route::get('/equipment', [\App\Http\Controllers\Api\EmployeeController::class, 'equipment'])
+            ->name('api.employees.equipment');
     });
     
     // Team endpoints

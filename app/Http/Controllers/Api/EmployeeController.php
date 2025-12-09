@@ -13,11 +13,13 @@ use App\Http\Requests\Api\Employee\ConfigureRemoteWorkRequest;
 use App\Http\Requests\Api\Employee\ReinstateEmployeeRequest;
 use App\Http\Requests\Api\Employee\TerminateEmployeeRequest;
 use App\Http\Resources\EmployeeResource;
+use App\Http\Resources\EquipmentResource;
 use Application\DTOs\Employee\CreateEmployeeDTO;
 use Application\DTOs\Employee\UpdateEmployeeDTO;
 use Application\Services\EmployeeService;
 use Illuminate\Http\JsonResponse;
 use Infrastructure\Persistence\Eloquent\Models\Employee;
+use Infrastructure\Persistence\Eloquent\Models\Equipment;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -44,6 +46,7 @@ class EmployeeController extends Controller
                 AllowedFilter::exact('department'),
                 AllowedFilter::exact('office_location'),
                 AllowedFilter::scope('search'),
+                AllowedFilter::scope('team'),
             ])
             ->allowedSorts(['first_name', 'last_name', 'hire_date', 'position'])
             ->defaultSort('-hire_date')
@@ -238,6 +241,26 @@ class EmployeeController extends Controller
                 'positionHistory' => $employee->positionHistory,
                 'locationHistory' => $employee->locationHistory,
             ],
+        ]);
+    }
+
+    /**
+     * Get equipment assigned to employee
+     */
+    public function equipment(string $employeeId): JsonResponse
+    {
+        $employee = Employee::where('employee_id', $employeeId)->firstOrFail();
+
+        $this->authorize('view', $employee);
+
+        $equipment = Equipment::where('current_assignee_id', $employee->id)
+            ->where('status', 'Assigned')
+            ->with(['currentAssignee'])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => EquipmentResource::collection($equipment),
         ]);
     }
 }

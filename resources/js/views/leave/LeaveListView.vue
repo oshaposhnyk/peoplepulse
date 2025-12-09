@@ -65,7 +65,19 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                   <tr v-for="leave in leaves" :key="leave.id" class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ leave.id }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ leave.employeeName }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <router-link
+                        :to="`/profile/${leave.employeeId}`"
+                        class="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-900"
+                      >
+                        <Avatar 
+                          :name="leave.employeeName" 
+                          :photo-url="leave.employeePhotoUrl" 
+                          size="sm" 
+                        />
+                        <span>{{ leave.employeeName }}</span>
+                      </router-link>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $t(`leave.${leave.leaveType.toLowerCase()}`) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {{ leave.startDate }} {{ $t('common.to') }} {{ leave.endDate }}
@@ -192,6 +204,7 @@ import { useAuthStore } from '@/stores/auth'
 import { showToast } from '@/utils/toast'
 import AppLayout from '@/layouts/AppLayout.vue'
 import Modal from '@/components/Modal.vue'
+import Avatar from '@/components/Avatar.vue'
 
 const authStore = useAuthStore()
 const { t } = useI18n()

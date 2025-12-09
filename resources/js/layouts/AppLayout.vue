@@ -80,7 +80,11 @@
               to="/profile"
               class="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
             >
-              <Avatar :name="authStore.user?.employee?.name || authStore.user?.employee?.email || authStore.user?.email || 'User'" size="sm" />
+              <Avatar 
+                :name="authStore.user?.employee?.name || authStore.user?.email || 'User'" 
+                :photo-url="authStore.user?.employee?.photoUrl"
+                size="sm" 
+              />
               <span>{{ authStore.user?.employee?.name || authStore.user?.employee?.email || authStore.user?.email }}</span>
             </router-link>
             

@@ -23,7 +23,36 @@ class DashboardController extends Controller
         $user = $request->user();
 
         if ($user->isAdmin()) {
-            // Admin sees all statistics
+            // Admin sees all statistics plus personal info
+            $employee = $user->employee;
+            
+            // Get admin's personal stats if they have an employee record
+            $myPendingLeaves = 0;
+            $myApprovedLeaves = 0;
+            $myEquipment = 0;
+            $myTeam = null;
+            
+            if ($employee) {
+                $myPendingLeaves = LeaveRequest::where('employee_id', $employee->id)
+                    ->where('status', 'Pending')
+                    ->count();
+                $myApprovedLeaves = LeaveRequest::where('employee_id', $employee->id)
+                    ->where('status', 'Approved')
+                    ->count();
+                $myEquipment = Equipment::where('current_assignee_id', $employee->id)
+                    ->where('status', 'Assigned')
+                    ->count();
+                
+                $teamMember = \DB::table('team_members')
+                    ->join('teams', 'team_members.team_id', '=', 'teams.id')
+                    ->where('team_members.employee_id', $employee->id)
+                    ->whereNull('team_members.removed_at')
+                    ->select('teams.name')
+                    ->first();
+                
+                $myTeam = $teamMember ? $teamMember->name : null;
+            }
+            
             $stats = [
                 'totalEmployees' => Employee::count(),
                 'activeEmployees' => Employee::active()->count(),
@@ -33,6 +62,11 @@ class DashboardController extends Controller
                 'availableEquipment' => Equipment::available()->count(),
                 'pendingLeaves' => LeaveRequest::pending()->count(),
                 'approvedLeaves' => LeaveRequest::approved()->count(),
+                // Personal stats for admin
+                'myPendingLeaves' => $myPendingLeaves,
+                'myApprovedLeaves' => $myApprovedLeaves,
+                'myEquipment' => $myEquipment,
+                'myTeam' => $myTeam,
             ];
         } else {
             // Employee sees only their own statistics

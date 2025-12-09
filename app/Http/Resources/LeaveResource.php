@@ -15,6 +15,7 @@ class LeaveResource extends JsonResource
             'id' => $this->leave_id,
             'employeeId' => $this->employee->employee_id,
             'employeeName' => $this->employee->full_name,
+            'employeePhotoUrl' => $this->employee->photo_url,
             'leaveType' => $this->leave_type,
             'startDate' => $this->start_date->format('Y-m-d'),
             'endDate' => $this->end_date->format('Y-m-d'),

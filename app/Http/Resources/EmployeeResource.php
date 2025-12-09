@@ -66,6 +66,26 @@ class EmployeeResource extends JsonResource
             
             'photoUrl' => $this->photo_url,
             
+            'teams' => \DB::table('team_members')
+                ->join('teams', 'team_members.team_id', '=', 'teams.id')
+                ->where('team_members.employee_id', $this->id)
+                ->whereNull('team_members.removed_at')
+                ->select(
+                    'teams.team_id as id',
+                    'teams.name',
+                    'team_members.role',
+                    'team_members.allocation_percentage as allocationPercentage'
+                )
+                ->get()
+                ->map(fn($team) => [
+                    'id' => $team->id,
+                    'name' => $team->name,
+                    'role' => $team->role,
+                    'allocationPercentage' => (int) $team->allocationPercentage,
+                ])
+                ->values()
+                ->all(),
+            
             'createdAt' => $this->created_at->toIso8601String(),
             'updatedAt' => $this->updated_at->toIso8601String(),
         ];

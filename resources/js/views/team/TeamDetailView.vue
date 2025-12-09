@@ -44,8 +44,18 @@
                 </div>
                 <div v-if="team.teamLead" class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">{{ $t('team.teamLead') }}</dt>
-                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {{ team.teamLead.name }} ({{ team.teamLead.position }})
+                  <dd class="mt-1 sm:mt-0 sm:col-span-2">
+                    <router-link
+                      :to="`/profile/${team.teamLead.id}`"
+                      class="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-900"
+                    >
+                      <Avatar 
+                        :name="team.teamLead.name" 
+                        :photo-url="team.teamLead.photoUrl" 
+                        size="sm" 
+                      />
+                      <span>{{ team.teamLead.name }} ({{ team.teamLead.position }})</span>
+                    </router-link>
                   </dd>
                 </div>
               </dl>

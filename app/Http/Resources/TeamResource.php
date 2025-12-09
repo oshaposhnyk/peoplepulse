@@ -26,6 +26,8 @@ class TeamResource extends JsonResource
             'teamLead' => $teamLead ? [
                 'id' => $teamLead->employee_id,
                 'name' => $teamLead->full_name,
+                'email' => $teamLead->email,
+                'photoUrl' => $teamLead->photo_url,
                 'position' => $teamLead->position,
             ] : null,
             
