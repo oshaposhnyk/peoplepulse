@@ -45,6 +45,17 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
         return EmployeeId::generate((int) $year, $sequence)->value();
     }
 
+    /**
+     * Find employee by employee_id (string identifier)
+     * Override base method to search by employee_id instead of id
+     */
+    public function findById(string $id): ?EmployeeAggregate
+    {
+        $model = EmployeeModel::where('employee_id', $id)->first();
+        
+        return $model ? $this->toDomain($model) : null;
+    }
+
     protected function toDomain($model): AggregateRoot
     {
         /** @var EmployeeModel $model */

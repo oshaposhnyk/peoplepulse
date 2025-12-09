@@ -237,6 +237,39 @@ class EmployeeService extends BaseService
     }
 
     /**
+     * Reinstate terminated employee
+     */
+    public function reinstate(
+        string $employeeId,
+        string $reinstatementDate,
+        string $reason
+    ): void {
+        $this->transaction(function () use ($employeeId, $reinstatementDate, $reason) {
+            $employee = $this->repository->findById($employeeId);
+
+            if (!$employee) {
+                throw NotFoundException::resource('Employee', $employeeId);
+            }
+
+            $employee->reinstate(
+                new DateTimeImmutable($reinstatementDate),
+                $reason
+            );
+
+            $this->repository->save($employee);
+
+            AuditLogger::employee('reinstated', $employeeId, [
+                'reinstatementDate' => $reinstatementDate,
+                'reason' => $reason,
+            ]);
+
+            $this->logInfo('Employee reinstated', [
+                'employeeId' => $employeeId,
+            ]);
+        });
+    }
+
+    /**
      * Get employee by ID
      */
     public function findById(string $employeeId): ?Employee

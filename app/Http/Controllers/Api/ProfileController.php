@@ -40,8 +40,8 @@ class ProfileController extends Controller
                 ], 404);
             }
 
-            // Get employee model from database by ID (not employee_id string)
-            $employeeModel = \Infrastructure\Persistence\Eloquent\Models\Employee::find($user->employee_id);
+            // Get employee model from database by employee_id (string identifier)
+            $employeeModel = \Infrastructure\Persistence\Eloquent\Models\Employee::where('employee_id', $user->employee_id)->first();
             
             \Log::info('Profile show: Employee search result', [
                 'user_employee_id' => $user->employee_id,
@@ -114,7 +114,7 @@ class ProfileController extends Controller
                 ], 404);
             }
 
-            $employee = Employee::find($user->employee_id);
+            $employee = Employee::where('employee_id', $user->employee_id)->first();
             
             if (!$employee) {
                 return response()->json([
@@ -185,7 +185,7 @@ class ProfileController extends Controller
 
             // Remove sensitive data for non-admin users
             $currentUser = $request->user();
-            if (!$currentUser->isAdmin() && $currentUser->employee_id !== $employeeModel->id) {
+            if (!$currentUser->isAdmin() && $currentUser->employee_id !== $employeeModel->employee_id) {
                 // Hide salary information for non-admin viewing other profiles
                 unset($employeeData['salary']);
             }

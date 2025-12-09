@@ -6,6 +6,7 @@ namespace Domain\Employee\Aggregates;
 
 use DateTimeImmutable;
 use Domain\Employee\Events\EmployeeHired;
+use Domain\Employee\Events\EmployeeReinstated;
 use Domain\Employee\Events\EmployeeTerminated;
 use Domain\Employee\Events\LocationChanged;
 use Domain\Employee\Events\PositionChanged;
@@ -213,6 +214,34 @@ final class Employee extends AggregateRoot
             $terminationDate,
             $lastWorkingDay,
             $terminationType,
+            $reason
+        ));
+    }
+
+    /**
+     * Reinstate terminated employee
+     */
+    public function reinstate(
+        DateTimeImmutable $reinstatementDate,
+        string $reason
+    ): void {
+        // Business rule: Can only reinstate terminated employees
+        if (!$this->isTerminated()) {
+            throw new InvalidArgumentException('Can only reinstate terminated employees');
+        }
+
+        // Business rule: Reinstatement date cannot be in the past
+        $today = new DateTimeImmutable('today');
+        if ($reinstatementDate < $today) {
+            throw new InvalidArgumentException('Reinstatement date cannot be in the past');
+        }
+
+        $this->status = EmploymentStatus::active();
+        $this->terminationDate = null;
+
+        $this->recordEvent(new EmployeeReinstated(
+            $this->id->value(),
+            $reinstatementDate,
             $reason
         ));
     }

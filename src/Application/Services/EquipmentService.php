@@ -17,6 +17,7 @@ use Domain\Equipment\ValueObjects\SerialNumber;
 use Domain\Shared\ValueObjects\Money;
 use Infrastructure\Persistence\Eloquent\Models\Equipment as EquipmentModel;
 use Infrastructure\Persistence\Eloquent\Models\Employee as EmployeeModel;
+use Infrastructure\Persistence\Eloquent\Models\EquipmentMaintenance;
 
 class EquipmentService extends BaseService
 {
@@ -208,6 +209,49 @@ class EquipmentService extends BaseService
             AuditLogger::equipment('transferred', $equipmentId, [
                 'from' => $fromEmployee?->employee_id,
                 'to' => $toEmployeeId,
+            ]);
+        });
+    }
+
+    /**
+     * Schedule equipment maintenance
+     */
+    public function scheduleMaintenance(
+        string $equipmentId,
+        string $description,
+        string $maintenanceType = 'Repair',
+        ?string $scheduledDate = null,
+        ?int $expectedDuration = null,
+        ?string $serviceProvider = null,
+        ?float $estimatedCost = null
+    ): void {
+        $this->transaction(function () use ($equipmentId, $description, $maintenanceType, $scheduledDate, $expectedDuration, $serviceProvider, $estimatedCost) {
+            $equipment = EquipmentModel::findOrFail($equipmentId);
+
+            $maintenance = EquipmentMaintenance::create([
+                'equipment_id' => $equipmentId,
+                'maintenance_type' => $maintenanceType,
+                'description' => $description,
+                'scheduled_date' => $scheduledDate ?: now()->format('Y-m-d'),
+                'expected_duration_days' => $expectedDuration ?? 1,
+                'service_provider' => $serviceProvider ?? 'Internal',
+                'is_external_vendor' => $serviceProvider !== null && $serviceProvider !== 'Internal',
+                'estimated_cost' => $estimatedCost,
+                'cost_currency' => 'USD',
+                'status' => 'Scheduled',
+                'scheduled_by' => auth()->user()?->employee_id,
+            ]);
+
+            // Update equipment status if needed
+            if ($equipment->status === 'Available' || $equipment->status === 'Assigned') {
+                $equipment->update([
+                    'status' => 'InMaintenance',
+                ]);
+            }
+
+            AuditLogger::equipment('maintenance_scheduled', $equipmentId, [
+                'maintenanceType' => $maintenanceType,
+                'scheduledDate' => $scheduledDate,
             ]);
         });
     }

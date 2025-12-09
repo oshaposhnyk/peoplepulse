@@ -82,7 +82,15 @@ class LeaveController extends Controller
      */
     public function store(CreateLeaveRequest $request): JsonResponse
     {
-        $employeeId = $request->user()->employee->employee_id;
+        // Admin can specify employeeId for other employees
+        // Otherwise use current user's employee_id
+        $employeeId = $request->input('employeeId') 
+            ?: $request->user()->employee->employee_id;
+        
+        // Validate that non-admin users can only create leave for themselves
+        if (!$request->user()->isAdmin() && $employeeId !== $request->user()->employee->employee_id) {
+            abort(403, 'You can only create leave requests for yourself');
+        }
         
         $dto = CreateLeaveRequestDTO::fromArray($request->validated(), $employeeId);
         

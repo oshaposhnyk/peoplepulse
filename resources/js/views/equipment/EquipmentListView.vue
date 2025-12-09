@@ -487,7 +487,7 @@ async function issueEquipment() {
   issueSubmitting.value = true
   try {
     await api.post(`/equipment/${selectedEquipment.value.id}/issue`, {
-      employee_id: issueForm.value.employeeId,
+      employeeId: issueForm.value.employeeId,
       accessories: issueForm.value.accessories,
       notes: issueForm.value.notes
     })

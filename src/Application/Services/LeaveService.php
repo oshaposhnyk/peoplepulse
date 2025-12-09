@@ -36,7 +36,7 @@ class LeaveService extends BaseService
             // Check if has sufficient balance (except sick/bereavement)
             $leaveType = LeaveType::fromString($dto->leaveType);
             if ($leaveType->requiresBalance()) {
-                $balance = $this->getBalance($employee->id, $dto->leaveType, date('Y'));
+                $balance = $this->getBalance($employee->id, $dto->leaveType, (int)date('Y'));
                 $requestedDays = $this->calculateDays($dto->startDate, $dto->endDate);
                 
                 if (!$balance->hasSufficientBalance($requestedDays)) {
@@ -143,8 +143,8 @@ class LeaveService extends BaseService
             }
 
             // Remove from pending
-            $balance = $this->getBalance($model->employee_id, $model->leave_type, date('Y'));
-            $balance->removeFromPending($model->total_days);
+            $balance = $this->getBalance($model->employee_id, $model->leave_type, (int)date('Y'));
+            $balance->removeFromPending((float)$model->total_days);
             $balance->save();
 
             $model->update([
@@ -173,13 +173,13 @@ class LeaveService extends BaseService
                 throw new \DomainException('Cannot cancel completed leave');
             }
 
-            $balance = $this->getBalance($model->employee_id, $model->leave_type, date('Y'));
+            $balance = $this->getBalance($model->employee_id, $model->leave_type, (int)date('Y'));
 
             // Restore balance if was approved
             if ($model->status === 'Approved') {
-                $balance->restore($model->total_days);
+                $balance->restore((float)$model->total_days);
             } elseif ($model->status === 'Pending') {
-                $balance->removeFromPending($model->total_days);
+                $balance->removeFromPending((float)$model->total_days);
             }
             
             $balance->save();

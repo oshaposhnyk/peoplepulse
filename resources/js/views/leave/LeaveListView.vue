@@ -226,9 +226,9 @@ async function requestLeave() {
   addSubmitting.value = true
   try {
     await api.post('/leaves', {
-      leave_type: addForm.value.leaveType,
-      start_date: addForm.value.startDate,
-      end_date: addForm.value.endDate,
+      leaveType: addForm.value.leaveType,
+      startDate: addForm.value.startDate,
+      endDate: addForm.value.endDate,
       reason: addForm.value.reason
     })
     showAddModal.value = false

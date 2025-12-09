@@ -82,16 +82,25 @@
               {{ $t('common.edit') }}
             </button>
             <button 
+              v-if="employee.status !== 'Terminated'"
               @click="showPositionModal = true"
               class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 text-sm"
             >
               {{ $t('employee.changePosition') }}
             </button>
             <button 
+              v-if="employee.status !== 'Terminated'"
               @click="showTerminateModal = true"
               class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm"
             >
               {{ $t('employee.terminate') }}
+            </button>
+            <button 
+              v-if="employee.status === 'Terminated'"
+              @click="showReinstateModal = true"
+              class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 text-sm"
+            >
+              {{ $t('employee.reinstate') }}
             </button>
           </div>
         </div>
@@ -189,6 +198,29 @@
               />
             </div>
             <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('employee.lastWorkingDay') }}</label>
+              <input 
+                v-model="terminateForm.lastWorkingDay" 
+                type="date" 
+                required 
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('employee.terminationType') }}</label>
+              <select 
+                v-model="terminateForm.terminationType" 
+                required 
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value="">{{ $t('common.select') }}</option>
+                <option value="Resignation">{{ $t('employee.terminationTypeResignation') }}</option>
+                <option value="Termination">{{ $t('employee.terminationTypeTermination') }}</option>
+                <option value="Retirement">{{ $t('employee.terminationTypeRetirement') }}</option>
+                <option value="Contract End">{{ $t('employee.terminationTypeContractEnd') }}</option>
+              </select>
+            </div>
+            <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('leave.reason') }}</label>
               <textarea 
                 v-model="terminateForm.reason" 
@@ -214,6 +246,48 @@
               <button 
                 type="button"
                 @click="showTerminateModal = false"
+                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                {{ $t('common.cancel') }}
+              </button>
+            </div>
+          </form>
+        </Modal>
+
+        <!-- Reinstate Modal -->
+        <Modal v-model="showReinstateModal">
+          <h3 class="text-lg font-bold mb-4 text-gray-900">{{ $t('employee.reinstate') }}</h3>
+          <form @submit.prevent="reinstateEmployee" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('employee.reinstatementDate') }}</label>
+              <input 
+                v-model="reinstateForm.reinstatementDate" 
+                type="date" 
+                required 
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('leave.reason') }}</label>
+              <textarea 
+                v-model="reinstateForm.reason" 
+                required 
+                rows="3"
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                :placeholder="$t('employee.reinstatementReasonPlaceholder')"
+              ></textarea>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button 
+                type="submit" 
+                :disabled="reinstateSubmitting"
+                class="flex-1 bg-green-600 text-white py-2 rounded-md hover:bg-green-700 disabled:opacity-50"
+              >
+                {{ reinstateSubmitting ? $t('employee.reinstating') : $t('employee.reinstate') }}
+              </button>
+              <button 
+                type="button"
+                @click="showReinstateModal = false"
                 class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
               >
                 {{ $t('common.cancel') }}
@@ -341,6 +415,16 @@ const showTerminateModal = ref(false)
 const terminateSubmitting = ref(false)
 const terminateForm = ref({
   terminationDate: '',
+  lastWorkingDay: '',
+  terminationType: '',
+  reason: ''
+})
+
+// Reinstate Modal
+const showReinstateModal = ref(false)
+const reinstateSubmitting = ref(false)
+const reinstateForm = ref({
+  reinstatementDate: '',
   reason: ''
 })
 
@@ -367,7 +451,7 @@ async function terminateEmployee() {
     const employeeId = route.params.id as string
     await api.post(`/employees/${employeeId}/terminate`, terminateForm.value)
     showTerminateModal.value = false
-    showToast({ message: t('employee.terminated'), type: 'success' })
+    showToast({ message: t('employee.terminatedSuccess'), type: 'success' })
     // Redirect back to employee list
     setTimeout(() => router.push('/employees'), 1000)
   } catch (error: any) {
@@ -375,6 +459,28 @@ async function terminateEmployee() {
     showToast({ message: error.response?.data?.message || t('employee.terminateFailed'), type: 'error' })
   } finally {
     terminateSubmitting.value = false
+  }
+}
+
+async function reinstateEmployee() {
+  reinstateSubmitting.value = true
+  try {
+    const employeeId = route.params.id as string
+    await api.post(`/employees/${employeeId}/reinstate`, reinstateForm.value)
+    showReinstateModal.value = false
+    // Reload employee data
+    await employeeStore.fetchEmployee(employeeId)
+    showToast({ message: t('employee.reinstated'), type: 'success' })
+    // Reset form
+    reinstateForm.value = {
+      reinstatementDate: '',
+      reason: ''
+    }
+  } catch (error: any) {
+    console.error('Failed to reinstate employee:', error)
+    showToast({ message: error.response?.data?.message || t('employee.reinstateFailed'), type: 'error' })
+  } finally {
+    reinstateSubmitting.value = false
   }
 }
 

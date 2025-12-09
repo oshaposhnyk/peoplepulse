@@ -52,6 +52,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
             ->name('api.employees.remote-work');
         Route::post('/terminate', [\App\Http\Controllers\Api\EmployeeController::class, 'terminate'])
             ->name('api.employees.terminate');
+        Route::post('/reinstate', [\App\Http\Controllers\Api\EmployeeController::class, 'reinstate'])
+            ->name('api.employees.reinstate');
         Route::get('/history', [\App\Http\Controllers\Api\EmployeeController::class, 'history'])
             ->name('api.employees.history');
     });
@@ -83,6 +85,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
             ->name('api.equipment.return');
         Route::post('/transfer', [\App\Http\Controllers\Api\EquipmentController::class, 'transfer'])
             ->name('api.equipment.transfer');
+        Route::post('/maintenance', [\App\Http\Controllers\Api\EquipmentController::class, 'maintenance'])
+            ->name('api.equipment.maintenance');
         Route::get('/history', [\App\Http\Controllers\Api\EquipmentController::class, 'history'])
             ->name('api.equipment.history');
     });

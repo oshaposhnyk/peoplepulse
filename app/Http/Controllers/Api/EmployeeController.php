@@ -10,6 +10,7 @@ use App\Http\Requests\Api\Employee\UpdateEmployeeRequest;
 use App\Http\Requests\Api\Employee\ChangePositionRequest;
 use App\Http\Requests\Api\Employee\ChangeLocationRequest;
 use App\Http\Requests\Api\Employee\ConfigureRemoteWorkRequest;
+use App\Http\Requests\Api\Employee\ReinstateEmployeeRequest;
 use App\Http\Requests\Api\Employee\TerminateEmployeeRequest;
 use App\Http\Resources\EmployeeResource;
 use Application\DTOs\Employee\CreateEmployeeDTO;
@@ -196,6 +197,27 @@ class EmployeeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Employee terminated successfully',
+        ]);
+    }
+
+    /**
+     * Reinstate terminated employee
+     */
+    public function reinstate(ReinstateEmployeeRequest $request, string $employeeId): JsonResponse
+    {
+        $employee = Employee::where('employee_id', $employeeId)->firstOrFail();
+
+        $this->authorize('update', $employee);
+
+        $this->employeeService->reinstate(
+            $employeeId,
+            $request->reinstatementDate,
+            $request->reason
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee reinstated successfully',
         ]);
     }
 
